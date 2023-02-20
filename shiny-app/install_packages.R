@@ -1,0 +1,15 @@
+# install R pakages
+install.packages("readr")
+install.packages("dplyr")
+install.packages("ggplot2")
+install.packages("forcats")
+install.packages("plotly")
+install.packages("reactable")
+install.packages("reactablefmtr")
+install.packages("tidyverse")
+install.packages("shinyWidgets")
+install.packages("pacman")
+install.packages("leaflet")
+install.packages("dygraphs")
+install.packages("here")
+
