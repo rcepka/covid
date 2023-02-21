@@ -33,7 +33,7 @@ data <- data %>%
          total_cases,
          new_cases,
          total_deaths,
-         new_deths,
+         new_deaths,
          total_cases_per_million,
          new_cases_per_million,
          total_deaths_per_million,
@@ -48,19 +48,43 @@ data <- data %>%
          )
 
 
+data <- data %>%
+  mutate(date = as.Date(date)) %>%
+  mutate(date = as.POSIXct(date))
+
+
+
+data_L <- data %>%
+  pivot_longer(!1:4, names_to = "metric", values_to = "values")
+#  dygraph(data_L) %>%
+#    dyRangeSelector()
+
+
+
+
+#data <- xts(data, order.by = data$date)
+
 
 
 data_deaths <- data %>%
   select(1:5, 8) %>%
   filter(iso_code == "AFG") %>%
   mutate(date = as.Date(date)) %>%
-  mutate(date = as.POSIXct(date)) %>%
-  xts(order.by = data_deaths$date)
+  mutate(date = as.POSIXct(date))
 
-a <- xts(data_deaths, order.by = data_deaths$date)
+data_deaths <- xts(data_deaths, order.by = data_deaths$date)
 
-  dygraph(data_deaths) %>%
-    dyRangeSelector(dateWindow = c("2022-10-01", "2022-11-01"))
-  dygraph(a)
+
+
+  # dygraph(data_deaths) %>%
+  #   dyRangeSelector()
+  #dygraph(data2)
+
+
+# Populate select input widgets
+# Select input choice - Countries
+countries_list <- unique(data$location)
+variables_list <- colnames(data)
+variables_list <- variables_list[-c(1,2,3,4)]
 
 

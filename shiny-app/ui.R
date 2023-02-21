@@ -19,15 +19,13 @@ pacman::p_load(
   shinyWidgets,
   dygraphs,
   readr,
-  here
+  here,
+  xts
 )
 
 
-#source("get_data.R")
+source("get_data.R")
 #here::i_am("shiny-app/ui.R")
-
-
-
 
 
 # Define UI for application that draws a histogram
@@ -38,28 +36,43 @@ fluidPage(
 
     # Sidebar with a slider input for number of bins
     sidebarLayout(
-        sidebarPanel(
-            sliderInput("bins",
-                        "Number of bins:",
-                        min = 1,
-                        max = 50,
-                        value = 30),
 
-           shinyWidgets::multiInput(
-              inputId = "Id010",
-              label = "Countries :",
-              choices = NULL,
-              choiceNames = lapply(seq_along(countries),
-                                   function(i) tagList(tags$img(src = flags[i],
-                                                                width = 20,
-                                                                height = 15), countries[i])),
-              choiceValues = countries
-            )
+      sidebarPanel(
+
+        multiInput(
+                 inputId = "countries",
+                 label = "Select countries",
+                 choices = countries_list,
+                 selected = c("Slovakia", "Austria", "United States"),
+                 options = list(
+                   enable_search = TRUE)
+                 ),
+        selectInput("variables",
+                  label = h3("Select metric"),
+                  choices = variables_list,
+                  selected = "Slovakia"),
         ),
 
-        # Show a plot of the generated distribution
-        mainPanel(
-            plotOutput("distPlot")
-        )
+
+    mainPanel(
+
+
+
+      dygraphOutput("dygr"),
+      plotOutput("plot"),
+      tableOutput("table"),
+      textOutput("text"),
+      textOutput("text2")
+      )
     )
 )
+
+
+
+
+
+
+
+
+
+

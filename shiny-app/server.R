@@ -12,17 +12,67 @@ library(shiny)
 # Define server logic required to draw a histogram
 function(input, output, session) {
 
-    output$distPlot <- renderPlot({
 
-        # generate bins based on input$bins from ui.R
-        x    <- faithful[, 2]
-        bins <- seq(min(x), max(x), length.out = input$bins + 1)
+  #Prepare the data frame
+  data_selected <- reactive(
+   # data2 %>% filter(location == input$countries),
+    data %>%
+      #filter(location == input$countries)%>%
+      filter(location %in% input$countries) %>%
+      select(date, input$variables)
+  )
 
-        # draw the histogram with the specified number of bins
-        hist(x, breaks = bins, col = 'darkgray', border = 'white',
-             xlab = 'Waiting time to next eruption (in mins)',
-             main = 'Histogram of waiting times')
 
-    })
+
+
+   output$dygr <- renderDygraph({
+
+     # dygraph_data() <- data_selected() %>%
+     #   xts(order.by = data_selected()$date)
+
+
+     dygraph_data <- xts(data_selected(), order.by = data_selected()$date)
+
+     # dygraph(dygraph_data) %>%
+     #   dySeries(input$variables) %>%
+     #   dyOptions(colors = RColorBrewer::brewer.pal(3, "Set2")) %>%
+     #   dyRangeSelector()
+
+     dygraph(dygraph_data) %>%
+       dySeries(input$variables) %>%
+       dyRangeSelector()
+
+     })
+
+
+  output$plot <- renderPlot({
+
+    #Without reactive()
+    ggplot(data,
+      aes(x = date, y = .data[[input$variables]], color = location)
+           ) +
+      geom_line(show.legend = FALSE)
+
+    # # with reactive()
+    # data_selected() %>%
+    #   ggplot(aes(x = date, y = input$variables, color = iso_code)) +
+    #   geom_line(show.legend = FALSE)
+
+
+
+  })
+
+
+
+
+
+
+
+
+
+  output$table <- renderTable({head(data_selected())})
+
+  output$text <- renderText({input$variables})
+  output$text2 <- renderText({input$countries})
 
 }
