@@ -94,11 +94,21 @@ fluidPage(
          ),
 
   column(9,
-         dygraphOutput("dygr"),
-         plotOutput("plot"),
-         tableOutput("table"),
-         textOutput("text"),
-         textOutput("text2")
+
+         tabsetPanel(
+
+           tabPanel("Dygraph",
+                    dygraphOutput("dygr")
+                    ),
+           tabPanel("Ggplot2",
+                    plotOutput("plot")
+                    ),
+           tabPanel("Tables",
+                    tableOutput("table"),
+                    textOutput("text"),
+                    textOutput("text2")
+                    )
+           )
          )
   )
 
