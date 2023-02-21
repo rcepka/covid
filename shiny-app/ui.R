@@ -104,6 +104,7 @@ fluidPage(
                     plotOutput("plot")
                     ),
            tabPanel("Tables",
+                    reactableOutput("reactable"),
                     tableOutput("table"),
                     textOutput("text"),
                     textOutput("text2")

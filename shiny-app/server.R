@@ -20,7 +20,7 @@ function(input, output, session) {
       #filter(location == input$countries)%>%
       filter(location %in% input$countries) %>%
       select(date, input$variables)
-  )
+    )
 
 
 
@@ -65,8 +65,24 @@ function(input, output, session) {
 
 
 
+output$reactable <- renderReactable({
+  data %>%
+    reactable(
+      #filterable = T,
+      searchable = T,
+      defaultPageSize = 10,
+      defaultColDef = colDef(
+        header = function(value) gsub("_", " ", value, fixed = TRUE),
+        align = "center"
+      ),
+      columns = list(
+        location = colDef(align = "left"),
+        iso_code = colDef(show = F),
+        continent = colDef(show = F)
+        )
+      )
 
-
+})
 
 
 
