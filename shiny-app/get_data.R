@@ -25,9 +25,9 @@ data <- read_csv("data/covid.csv")
 
 
 # prepare first test dataset
-data <- data %>%
-  select(iso_code,
-         continent,
+data_wide <- data %>%
+  select(#iso_code,
+         # continent,
          location, # country
          date,
          total_cases,
@@ -46,79 +46,32 @@ data <- data %>%
          # people_fully_vaccinated,
          # new_vaccinations,
          ) %>%
-  filter(date> "2022-01-01")
+  filter(date > "2022-06-01")
 
 
-data <- data %>%
+data_wide <- data_wide %>%
   mutate(date = as.Date(date))
 # %>%
 #   mutate(date = as.POSIXct(date))
 
-#
-#
-# data_L <- data %>%
-#   pivot_longer(!1:4, names_to = "metric", values_to = "values")
-# #  dygraph(data_L) %>%
-# #    dyRangeSelector()
-#
-#
-#
-# data_L <- data_L %>%
-#   filter(
-#     iso_code %in% c("SVK", "AFK"),
-#     metric %in% c("total_cases", "new_cases", "total_deaths", "new_deaths")
-#     )
-#
-#
-#   data_L_xts <- xts(data_L, order.by = data_L$date)
-#
-# data_L_xts %>%
-#   #select(1, 5, 7) %>%
-#   dygraph() %>%
-#  # dySeries(values) %>%
-#   dyRangeSelector()
-#
-#
-# data_L %>%
-#   ggplot(aes(x = date, y = values), color = "iso_code") +
-#   geom_point()
-#
-#
-#
-#
-# #data <- xts(data, order.by = data$date)
-#
-#
-#
-# data_deaths <- data %>%
-#   select(1:5, 8) %>%
-#   filter(iso_code == "AFG") %>%
-#   mutate(date = as.Date(date)) %>%
-#   mutate(date = as.POSIXct(date))
-#
-# data_deaths <- xts(data_deaths, order.by = data_deaths$date)
-#
+data_wide_xts <- xts(data_wide, order.by = data_wide$date)
 
 
 
+data_long <- data_wide %>%
+  pivot_longer(
+    cols = !c(1,2), names_to = "metric", values_to = "values")
+#  dygraph(data_L) %>%
+#    dyRangeSelector()
+
+   data_long_xts <- xts(data_long, order.by = data_long$date)
 
 
-
-
-
-
-
-  # dygraph(data_deaths) %>%
-  #   dyRangeSelector()
-  #dygraph(data2)
 
 
 # Populate select input widgets
 # Select input choice - Countries
-countries_list <- unique(data$location)
-variables_list <- colnames(data)
-variables_list <- variables_list[-c(1,2,3,4)]
-
-
-
+countries_list <- unique(data_wide$location)
+variables_list <- colnames(data_wide)
+variables_list <- variables_list[-c(1,2)]
 

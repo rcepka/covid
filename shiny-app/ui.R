@@ -98,13 +98,20 @@ fluidPage(
          tabsetPanel(
 
            tabPanel("Dygraph",
-                    dygraphOutput("dygr")
+                    dygraphOutput("dygr_wide"),
+                    dygraphOutput("dygr_long")
                     ),
            tabPanel("Ggplot2",
-                    plotOutput("plot")
+                    plotOutput("plot_wide"),
+                    plotOutput("plot_long")
                     ),
+           tabPanel("Plotly",
+                    #plotlyOutput("plotly_wide"),
+                    plotlyOutput("plotly_long", height = "850px")
+           ),
            tabPanel("Tables",
-                    reactableOutput("reactable"),
+                    reactableOutput("reactable_wide"),
+                    reactableOutput("reactable_long"),
                     tableOutput("table"),
                     textOutput("text"),
                     textOutput("text2")
