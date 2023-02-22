@@ -75,53 +75,42 @@ source("get_data.R")
 fluidPage(
 
   # Application title
-  titlePanel("Old Faithful Geyser Data"),
+  titlePanel("Global Covid situation exploration"),
 
   column(3,
+
+         wellPanel(
 
          multiInput(
            inputId = "countries",
            label = "Select countries",
            choices = countries_list,
-           selected = c("Slovakia", "Austria", "United States"),
+           selected = c("Slovakia", "Austria", "Czechia"),
            options = list(
-             enable_search = TRUE)
+             enable_search = TRUE
+             #non_selected_header = "Choose between:",
+             #selected_header = "You have selected:"
+             )
          ),
          selectInput("variables",
                      label = h3("Select metric"),
                      choices = variables_list,
                      selected = "Slovakia"),
          ),
+         ),
 
   column(9,
 
          tabsetPanel(
 
-           tabPanel("Dygraph",
-                    dygraphOutput("dygr_wide"),
-                    dygraphOutput("dygr_long")
-                    ),
-           tabPanel("Ggplot2",
-                    plotOutput("plot_wide"),
-                    plotOutput("plot_long")
-                    ),
-           tabPanel("Plotly",
+           tabPanel("Plot",
                     #plotlyOutput("plotly_wide"),
                     plotlyOutput("plotly_long", height = "850px")
            ),
-           tabPanel("Tables",
+           tabPanel("Table data",
                     reactableOutput("reactable_wide"),
                     reactableOutput("reactable_long"),
-                    tableOutput("table"),
-                    textOutput("text"),
-                    textOutput("text2")
                     )
            )
          )
   )
-
-
-
-
-
-

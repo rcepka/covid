@@ -23,45 +23,18 @@ function(input, output, session) {
     data_long %>%
       filter(location %in% input$countries) %>%
       filter(metric == input$variables)
-
-  )
-
-
-   output$dygr_wide <- renderDygraph({
-
-     dygraph_data_wide <- xts(data_selected_wide(), order.by = data_selected_wide()$date)
-
-     #dygraph(dygraph_data_wide) %>%
-      dygraph(data_wide_xts) %>%
-       dySeries("new_cases") %>%
-       #dyGroup(input$countries) %>%
-       #dyGroup(input$variables, color = dygraph_data_wide$iso_country) %>%
-       dyRangeSelector()
-     })
-
-
-   output$dygr_long <- renderDygraph({
-
-     #data_selected_long <- xts(data_selected_long(), order.by = data_selected_long()$date)
-     data_long_xts2 <- data_long_xts %>%
-       select(location)
-
-     dygraph(data_long_xts2) %>%
-       dySeries(input$variables) %>%
-       #dyGroup(input$countries) %>%
-       #dyGroup(input$variables, color = dygraph_data$iso_country) %>%
-       dyRangeSelector()
-
-   })
+    )
 
 
    output$plotly_long <- renderPlotly({
 
-     plot_ly(data_selected_long(), x = ~date,y = ~values,
-            color = ~location
-       ) %>%
+     plot_ly(data_selected_long(),
+             x = ~date,
+             y = ~values,
+             color = ~location
+             ) %>%
        add_lines() %>%
-       layout(showlegend = T, title='Time Series with Range Slider and Selectors',
+       layout(showlegend = T, title='',
               xaxis = list(rangeslider = list(visible = T, thickness = 0.1),
                            rangeselector=list(
                              buttons=list(
@@ -71,53 +44,28 @@ function(input, output, session) {
                                list(count=1, label="1y", step="year", stepmode="backward"),
                                list(step="all")
                              ))))
-
-   })
-
+     })
 
 
-  output$plot_wide <- renderPlot({
-
-    #Without reactive()
-    ggplot(data_wide,
-      #aes(x = date, y = .data[[input$variables]], color = location)
-      aes(x = date, y = .data[[input$variables]], color = .data[[input$variables]])
-           ) +
-      geom_line(show.legend = FALSE)
-
-    # # with reactive()
-    # data_selected() %>%
-    #   ggplot(aes(x = date, y = input$variables, color = iso_code)) +
-    #   geom_line(show.legend = FALSE)
-
-  })
-
-  output$plot_long <- renderPlot({
-
-    # #Without reactive()
-    # ggplot(data_wide,
-    #        #aes(x = date, y = .data[[input$variables]], color = location)
-    #        aes(x = date, y = .data[[input$variables]], color = .data[[input$variables]])
-    # ) +
-    #   geom_line(show.legend = FALSE)
-
-    # with reactive()
-    data_selected_long() %>%
-      ggplot(aes(x = date,
-                 #y = input$variables,
-                 #y = .data[[input$variables]],
-                 y = values,
-                 color = location
-                 )
-             ) +
-      geom_line(show.legend = T)
-
-
-  })
-
-
-
-
+  # output$plot_long <- renderPlot({
+  #   # #Without reactive()
+  #   # ggplot(data_wide,
+  #   #        #aes(x = date, y = .data[[input$variables]], color = location)
+  #   #        aes(x = date, y = .data[[input$variables]], color = .data[[input$variables]])
+  #   # ) +
+  #   #   geom_line(show.legend = FALSE)
+  #
+  #   # with reactive()
+  #   data_selected_long() %>%
+  #     ggplot(aes(x = date,
+  #                #y = input$variables,
+  #                #y = .data[[input$variables]],
+  #                y = values,
+  #                color = location
+  #                )
+  #            ) +
+  #     geom_line(show.legend = T)
+  # })
 
 
 
