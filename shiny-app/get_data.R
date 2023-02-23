@@ -3,8 +3,6 @@
 # Download data from Ourworldindata website
 # https://github.com/owid/covid-19-data/tree/master/public/data
 
-
-
 if (!file.exists("data/covid.csv") == "TRUE") {
 
   print("downloading file because doesnt exists or is old.")
@@ -53,18 +51,17 @@ data <- data_all %>%
 data_wide <- data
 
 
-
 data_long <- data %>%
   pivot_longer(
     cols = !c(1,2), names_to = "metric", values_to = "values")
 
 
-
-
 # Populate select input widgets
 # Select input choice - Countries
 countries_list <- unique(data_wide$location)
-variables_list <- colnames(data_wide)
-variables_list <- variables_list[-c(1,2)]
-variable_names <- gsub("_", " ", variables_list)
+# Metrics/variables
+variables_id <- colnames(data_wide)
+variables_id <- variables_id[-c(1,2)]
+variables_names <- str_to_title(gsub("_", " ", variables_id))
+variables <- data.frame(variables_id, variables_names)
 

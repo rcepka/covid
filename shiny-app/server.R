@@ -7,7 +7,7 @@
 #    http://shiny.rstudio.com/
 #
 
-library(shiny)
+source("get_data.R")
 
 # Define server logic required to draw a histogram
 function(input, output, session) {
@@ -47,28 +47,6 @@ function(input, output, session) {
      })
 
 
-  # output$plot_long <- renderPlot({
-  #   # #Without reactive()
-  #   # ggplot(data_wide,
-  #   #        #aes(x = date, y = .data[[input$variables]], color = location)
-  #   #        aes(x = date, y = .data[[input$variables]], color = .data[[input$variables]])
-  #   # ) +
-  #   #   geom_line(show.legend = FALSE)
-  #
-  #   # with reactive()
-  #   data_selected_long() %>%
-  #     ggplot(aes(x = date,
-  #                #y = input$variables,
-  #                #y = .data[[input$variables]],
-  #                y = values,
-  #                color = location
-  #                )
-  #            ) +
-  #     geom_line(show.legend = T)
-  # })
-
-
-
 output$reactable_wide <- renderReactable({
   data_selected_wide() %>%
     reactable(
@@ -76,7 +54,7 @@ output$reactable_wide <- renderReactable({
       searchable = T,
       defaultPageSize = 10,
       defaultColDef = colDef(
-        header = function(value) gsub("_", " ", value, fixed = TRUE),
+        header = function(value) str_to_title(gsub("_", " ", value, fixed = TRUE)),
         align = "center"
       ),
       columns = list(

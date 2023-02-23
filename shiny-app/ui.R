@@ -7,8 +7,8 @@
 #    http://shiny.rstudio.com/
 #
 
-if (!require("pacman")) install.packages("pacman")
-
+# if (!require("pacman")) install.packages("pacman")
+#
 pacman::p_load(
   shiny,
   tidyverse,
@@ -16,60 +16,10 @@ pacman::p_load(
   plotly,
   reactable,
   reactablefmtr,
-  shinyWidgets,
-  dygraphs,
-  readr,
-  here,
-  xts
+  shinyWidgets
 )
 
-
 source("get_data.R")
-#here::i_am("shiny-app/ui.R")
-
-
-
-# # fluidPage() version I
-# fluidPage(
-#
-#     # Application title
-#     titlePanel("Old Faithful Geyser Data"),
-#
-#     # Sidebar with a slider input for number of bins
-#     sidebarLayout(
-#
-#       sidebarPanel(
-#
-#         multiInput(
-#                  inputId = "countries",
-#                  label = "Select countries",
-#                  choices = countries_list,
-#                  selected = c("Slovakia", "Austria", "United States"),
-#                  options = list(
-#                    enable_search = TRUE)
-#                  ),
-#         selectInput("variables",
-#                   label = h3("Select metric"),
-#                   choices = variables_list,
-#                   selected = "Slovakia"),
-#         ),
-#
-#
-#     mainPanel(
-#
-#
-#
-#       dygraphOutput("dygr"),
-#       plotOutput("plot"),
-#       tableOutput("table"),
-#       textOutput("text"),
-#       textOutput("text2")
-#       )
-#     )
-# )
-
-
-
 
 # FliudPage() version II
 fluidPage(
@@ -92,9 +42,12 @@ fluidPage(
              #selected_header = "You have selected:"
              )
          ),
+
+         hr(),
+
          selectInput("variables",
-                     label = h3("Select metric"),
-                     choices = variables_list,
+                     label = "Select metric",
+                     choices = setNames(variables$variables_id, variables$variables_names),
                      selected = "Slovakia"),
          ),
          ),
@@ -104,7 +57,6 @@ fluidPage(
          tabsetPanel(
 
            tabPanel("Plot",
-                    #plotlyOutput("plotly_wide"),
                     plotlyOutput("plotly_long", height = "850px")
            ),
            tabPanel("Table data",
