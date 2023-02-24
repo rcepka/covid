@@ -90,7 +90,7 @@ ui <- fluidPage(
                ),
            ),
 
-    column(3,
+    column(9,
            selectInput(
              "variables",
              label = "Select metric",

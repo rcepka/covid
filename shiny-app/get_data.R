@@ -64,3 +64,24 @@ variables_id <- variables_id[-c(1,2)]
 variables_names <- str_to_title(gsub("_", " ", variables_id))
 variables <- data.frame(variables_id, variables_names)
 
+
+
+# Summary data to display on the map
+
+
+summary <- data %>%
+  group_by(location) %>%
+  summarise(
+    #total_cases = max(total_cases, na.rm = TRUE),
+    total_deaths = max(total_deaths, na.rm = T),
+    new_deaths = sum(new_deaths, na.rm = T)
+  )
+
+# library(leaflet)
+# library(maps)
+#
+# summary %>% leaflet() %>%
+#   addTiles()
+# map("svk")
+
+
