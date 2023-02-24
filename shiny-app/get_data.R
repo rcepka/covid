@@ -33,19 +33,18 @@ data <- data_all %>%
     new_cases,
     total_deaths,
     new_deaths,
-    #total_cases_per_million,
-    #new_cases_per_million,
-    #total_deaths_per_million,
-    #new_deaths_per_million,
-    #reproduction_rate,
-    #icu_patients,
-    #icu_patients_per_million,
-    # total_vaccinations,
-    # people_vaccinated,
-    # people_fully_vaccinated,
-    # new_vaccinations,
+    total_cases_per_million,
+    new_cases_per_million,
+    total_deaths_per_million,
+    new_deaths_per_million,
+    reproduction_rate,
+    icu_patients,
+    icu_patients_per_million,
+    total_vaccinations,
+    people_vaccinated,
+    people_fully_vaccinated,
+    new_vaccinations,
     )
-
 
 
 data_wide <- data

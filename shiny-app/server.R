@@ -34,46 +34,59 @@ function(input, output, session) {
              color = ~location
              ) %>%
        add_lines() %>%
-       layout(showlegend = T, title='',
-              xaxis = list(rangeslider = list(visible = T, thickness = 0.1),
-                           rangeselector=list(
-                             buttons=list(
-                               list(count=1, label="1m", step="month", stepmode="backward"),
-                               list(count=6, label="6m", step="month", stepmode="backward"),
-                               list(count=1, label="YTD", step="year", stepmode="todate"),
-                               list(count=1, label="1y", step="year", stepmode="backward"),
-                               list(step="all")
-                             ))))
+       config(displayModeBar = F) %>%
+       layout(
+         showlegend = T,
+         #plot_bgcolor='#e5ecf6',
+         title='',
+         xaxis = list(
+           title = "",
+           showgrid = F,
+           rangeslider = list(
+             bgcolor = "#e5ecf6",
+             visible = T,
+             thickness = 0.08),
+           rangeselector=list(
+             buttons=list(
+               list(count=1, label="1m", step="month", stepmode="backward"),
+               list(count=6, label="6m", step="month", stepmode="backward"),
+               list(count=1, label="YTD", step="year", stepmode="todate"),
+               list(count=1, label="1y", step="year", stepmode="backward"),
+               list(step="all")
+               )
+             )
+           ),
+         yaxis = list(
+           title = ""
+           )
+         )
      })
 
 
-output$reactable_wide <- renderReactable({
-  data_selected_wide() %>%
-    reactable(
-      #filterable = T,
-      searchable = T,
-      defaultPageSize = 10,
-      defaultColDef = colDef(
-        header = function(value) str_to_title(gsub("_", " ", value, fixed = TRUE)),
-        align = "center"
-      ),
-      columns = list(
-        location = colDef(align = "left"),
-        #iso_code = colDef(show = F),
-        continent = colDef(show = F)
+  output$reactable_wide <- renderReactable({
+    data_selected_wide() %>%
+      reactable(
+        filterable = F,
+        searchable = T,
+        showPageSizeOptions = TRUE,
+        pageSizeOptions = c(10, 15, 20, 30, 50, 100),
+        defaultPageSize = 15,
+        defaultColDef = colDef(
+          header = function(value) str_to_title(gsub("_", " ", value, fixed = TRUE)),
+          align = "center",
+          minWidth = 150,
+          ),
+        columns = list(
+          location = colDef(align = "left"),
+          #iso_code = colDef(show = F),
+          continent = colDef(show = F)
+          )
         )
-      )
-})
+    })
 
-output$reactable_long <- renderReactable({
-  data_selected_long() %>% reactable()
-  })
+  # output$reactable_long <- renderReactable({
+  #   data_selected_long() %>% reactable()
+  #   })
 
-
-
-  output$table <- renderTable({head(data_selected_wide())})
-
-  output$text <- renderText({input$variables})
-  output$text2 <- renderText({input$countries})
 
 }
