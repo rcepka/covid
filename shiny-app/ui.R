@@ -21,7 +21,9 @@ pacman::p_load(
   reactable,
   reactablefmtr,
   shinyWidgets,
-  bslib
+  bslib,
+  lubridate,
+  dataui
 )
 
 print("going to get the data.")

@@ -92,3 +92,37 @@ summary <- data_wide %>%
 
 
 all_colnames <- as_tibble(colnames(data_all))
+
+
+
+# #
+# # Spraklines testing
+# #
+# sparklines_data <- data_long %>%
+#   group_by(location, date = lubridate::floor_date(date, "month")) %>%
+#   na.omit(.) %>%
+#   summarize(across(where(is.numeric), list)) %>%
+#   reactable(
+#     .,
+#     values = colDef(
+#       cell = react_sparkline(
+#         #data = .,
+#         height = 100,
+#         line_width = 1.5,
+#         bandline = 'innerquartiles',
+#         bandline_color = 'forestgreen',
+#         bandline_opacity = 0.6,
+#         labels = c('min','max'),
+#         label_size = '0.9em',
+#         highlight_points = highlight_points(min = 'blue', max = 'red'),
+#         margin = reactablefmtr::margin(t=15,r=2,b=15,l=2),
+#         tooltip_type = 2
+#       )
+#     )
+#   )
+#
+# sparkline(sparklines_data$values[2], "line")
+#
+# library(sparkline)
+#
+# remotes::install_github("timelyportfolio/dataui")
