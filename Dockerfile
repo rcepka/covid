@@ -2,7 +2,7 @@ FROM rcepka/shiny-verse
 
 
 COPY /shiny-app ./shiny-app
-#COPY . .
+#COPY / ./
 
 
 # install renv & restore packages

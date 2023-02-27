@@ -9,6 +9,10 @@
 
 # if (!require("pacman")) install.packages("pacman")
 #
+print("starting the app!")
+
+print("Loading r packages with Pacman")
+
 pacman::p_load(
   shiny,
   tidyverse,
@@ -16,113 +20,87 @@ pacman::p_load(
   plotly,
   reactable,
   reactablefmtr,
-  shinyWidgets
+  shinyWidgets,
+  bslib
 )
 
+print("going to get the data.")
 source("get_data.R")
 
-# # FliudPage() original version II
-# fluidPage(
-#
-#   # Application title
-#   titlePanel("Global Covid situation exploration"),
-#
-#   column(3,
-#
-#          wellPanel(
-#
-#          multiInput(
-#            inputId = "countries",
-#            label = "Select countries",
-#            choices = countries_list,
-#            selected = c("Slovakia", "Austria", "Czechia", "Hungary", "Germany", "Switzerland"),
-#            options = list(
-#              enable_search = TRUE
-#              #non_selected_header = "Choose between:",
-#              #selected_header = "You have selected:"
-#              )
-#          ),
-#
-#         tags$hr(),
-#
-#          selectInput("variables",
-#                      label = "Select metric",
-#                      choices = setNames(variables$variables_id, variables$variables_names),
-#                      selected = "Slovakia"),
-#          ),
-#          ),
-#
-#   column(9,
-#
-#          tabsetPanel(
-#
-#            tabPanel("Plot",
-#                     plotlyOutput("plotly_long", height = "850px")
-#            ),
-#            tabPanel("Table data",
-#                     reactableOutput("reactable_wide"),
-#                     reactableOutput("reactable_long"),
-#                     )
-#            )
-#          )
-#   )
+
+# FliudPage()
+#ui <- fluidPage(
+
+ui <- navbarPage("Covid - the global situation",
+                 theme = bs_theme(version = 5, bootswatch = "minty"),
+                 # tabPanel("Component 1"),
+                 # tabPanel("Component 2"),
+                 # tabPanel("Component 3"),
 
 
+                 # Application title
+                 #titlePanel("Global Covid situation exploration"),
 
 
-# FliudPage() version II
-ui <- fluidPage(
+             fluidRow(
+                   column(2,
 
-  # Application title
-  titlePanel("Global Covid situation exploration"),
+                          multiInput(
+                            inputId = "countries",
+                            label = tags$h5("Select countries"),
+                            choices = countries_list,
+                            selected = c("Slovakia", "Austria", "Czechia", "Hungary", "Germany"),
+                            options = list(
+                              enable_search = TRUE),
+                            ),
+                          selectInput(
+                            "variables",
+                            label = tags$h5("Select metric"),
+                            choices = setNames(variables$variables_id, variables$variables_names),
+                            selected = "total_cases_per_million",
+                          ),
+                          br(),
+                          prettySwitch(
+                            inputId = "relative_to_population",
+                            label = "Relative to population",
+                            status = "success",
+                            fill = TRUE
+                          ),
 
+                          # card(
+                          #   card_header(
+                          #     class = "bg-dark",
+                          #     "A header"
+                          #   ),
+                          #   card_body(
+                          #     markdown("Some text with a [link](https://github.com)")
+                          #     )
+                          #   )
+                          ),
 
-  fluidRow(
+                   column(10,
 
-    column(3,
-           multiInput(
-               inputId = "countries",
-               label = "Select countries",
-               choices = countries_list,
-               selected = c("Slovakia", "Austria", "Czechia", "Hungary", "Germany", "Switzerland"),
-               options = list(
-                 enable_search = TRUE),
-               ),
-           ),
+                          tabsetPanel(
+                            tabPanel(
+                              "Plot",
+                              wellPanel(
+                                plotlyOutput("plotly_long", height = "750px")
+                              )
+                            ),
+                            # tabPanel(
+                            #   "Interactive map",
+                            #   source("testUI.R")
+                            # ),
+                            tabPanel(
+                              "Data explorer",
+                              wellPanel(
+                                reactableOutput("reactable_wide"),
+                                reactableOutput("reactable_long"),
+                              ),
+                            ),
+                          )
+                        )
+                   )
 
-    column(9,
-           selectInput(
-             "variables",
-             label = "Select metric",
-             choices = setNames(variables$variables_id, variables$variables_names),
-             selected = "total_cases_per_million",
-             ),
-           ),
-    ),
-
-
-    tags$hr(),
-
-
-
-    fluidRow(
-      column(12, offset = 0,
-             tabsetPanel(
-               tabPanel(
-                 "Plot",
-                  plotlyOutput("plotly_long", height = "850px")
-                 ),
-               tabPanel(
-                 "Interactive map",
-                 source("testUI.R")
-               ),
-               tabPanel(
-                 "Data explorer",
-                 reactableOutput("reactable_wide"),
-                 reactableOutput("reactable_long"),
-                 ),
-               )
-             )
-      )
-  )
+)
 

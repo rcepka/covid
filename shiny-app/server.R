@@ -12,6 +12,8 @@ source("get_data.R")
 # Define server logic required to draw a histogram
 function(input, output, session) {
 
+  #bs_themer()
+
 
   #Prepare the data frame
   data_selected_wide <- reactive(
@@ -38,7 +40,7 @@ function(input, output, session) {
        layout(
          showlegend = T,
          #plot_bgcolor='#e5ecf6',
-         title='',
+         title= input$variables,
          xaxis = list(
            title = "",
            showgrid = F,

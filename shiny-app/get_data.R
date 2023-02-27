@@ -18,12 +18,14 @@ if (!file.exists("data/covid.csv") == "TRUE") {
 
 # import dataset into R
 #data <- read_csv(here("shiny-app", "data", "covid.csv"))
-print("Reading data into R data frame...")
+print("Reading csv data into R data frame...")
 data_all <- read_csv("data/covid.csv")
+print("Dataframe ready")
 
 
 # prepare first test dataset
-data <- data_all %>%
+print("Data cleansing - main data table")
+data_wide <- data_all %>%
   select(
     #iso_code,
     # continent,
@@ -45,19 +47,23 @@ data <- data_all %>%
     people_fully_vaccinated,
     new_vaccinations,
     )
+print("Main data table ready")
 
 
-data_wide <- data
 
 
-data_long <- data %>%
+print("Creating data long data frame")
+data_long <- data_wide %>%
   pivot_longer(
     cols = !c(1,2), names_to = "metric", values_to = "values")
 
 
+
 # Populate select input widgets
+
 # Select input choice - Countries
 countries_list <- unique(data_wide$location)
+
 # Metrics/variables
 variables_id <- colnames(data_wide)
 variables_id <- variables_id[-c(1,2)]
@@ -69,7 +75,7 @@ variables <- data.frame(variables_id, variables_names)
 # Summary data to display on the map
 
 
-summary <- data %>%
+summary <- data_wide %>%
   group_by(location) %>%
   summarise(
     #total_cases = max(total_cases, na.rm = TRUE),
@@ -85,3 +91,4 @@ summary <- data %>%
 # map("svk")
 
 
+all_colnames <- as_tibble(colnames(data_all))
