@@ -18,7 +18,8 @@ function(input, output, session) {
   #Prepare the data frame
   data_selected_wide <- reactive(
     data_wide %>%
-      filter(location %in% input$countries)
+      filter(location %in% input$countries) %>%
+      select(1, 2, input$variables)
     )
 
   data_selected_long <- reactive(
@@ -68,15 +69,20 @@ function(input, output, session) {
   output$reactable_wide <- renderReactable({
     data_selected_wide() %>%
       reactable(
-        filterable = F,
+        filterable = T,
         searchable = T,
+        sortable = T,
+        resizable = T,
+        striped = T,
         showPageSizeOptions = TRUE,
         pageSizeOptions = c(10, 15, 20, 30, 50, 100),
         defaultPageSize = 15,
+        defaultSorted = list(location = "asc", date = "desc"),
         defaultColDef = colDef(
           header = function(value) str_to_title(gsub("_", " ", value, fixed = TRUE)),
           align = "center",
           minWidth = 150,
+          width = 200
           ),
         columns = list(
           location = colDef(align = "left"),
