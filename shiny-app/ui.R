@@ -32,9 +32,9 @@ print("going to get the data.")
 
 
 # FliudPage()
-#ui <- fluidPage(
+ui <- fluidPage(
 
-ui <- navbarPage("Covid - the global situation",
+    navbarPage("Covid - the global situation",
                  theme = bs_theme(version = 5, bootswatch = "minty"),
                  # tabPanel("Component 1"),
                  # tabPanel("Component 2"),
@@ -112,4 +112,4 @@ ui <- navbarPage("Covid - the global situation",
                    )
 
 )
-
+)

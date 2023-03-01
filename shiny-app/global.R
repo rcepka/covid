@@ -1,22 +1,23 @@
-# if (!require("pacman")) install.packages("pacman")
-#
-print("starting the app!")
 
-# print("Loading r packages with Pacman")
-#
-# pacman::p_load(
-#   shiny,
-#   tidyverse,
-#   ggplot2,
-#   plotly,
-#   reactable,
-#   reactablefmtr,
-#   shinyWidgets,
-#   bslib,
-#   lubridate,
-#   dataui,
-#   shinycssloaders
-# )
+print("starting the app!")
+ if (!require("pacman")) install.packages("pacman")
+
+
+print("Loading r packages with Pacman")
+
+pacman::p_load(
+   shiny,
+   tidyverse,
+   ggplot2,
+   plotly,
+   reactable,
+   reactablefmtr,
+   shinyWidgets,
+   bslib,
+   lubridate,
+   dataui,
+   shinycssloaders
+ )
 
 
 # Download data from Ourworldindata website
