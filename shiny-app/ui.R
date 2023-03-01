@@ -11,23 +11,24 @@
 #
 print("starting the app!")
 
-print("Loading r packages with Pacman")
-
-pacman::p_load(
-  shiny,
-  tidyverse,
-  ggplot2,
-  plotly,
-  reactable,
-  reactablefmtr,
-  shinyWidgets,
-  bslib,
-  lubridate,
-  dataui
-)
+# print("Loading r packages with Pacman")
+#
+# pacman::p_load(
+#   shiny,
+#   tidyverse,
+#   ggplot2,
+#   plotly,
+#   reactable,
+#   reactablefmtr,
+#   shinyWidgets,
+#   bslib,
+#   lubridate,
+#   dataui,
+#   shinycssloaders
+# )
 
 print("going to get the data.")
-source("get_data.R")
+#source("get_data.R")
 
 
 # FliudPage()
@@ -85,9 +86,9 @@ ui <- navbarPage("Covid - the global situation",
                           tabsetPanel(
                             tabPanel(
                               "Plot",
-                              wellPanel(
-                                plotlyOutput("plotly_long", height = "750px")
-                              )
+                              #wellPanel(
+                                plotlyOutput("plotly_long", height = "750px") %>% withSpinner()
+                              #)
                             ),
                             # tabPanel(
                             #   "Interactive map",
@@ -95,11 +96,17 @@ ui <- navbarPage("Covid - the global situation",
                             # ),
                             tabPanel(
                               "Data explorer",
-                              wellPanel(
+                              #wellPanel(
                                 reactableOutput("reactable_wide"),
                                 reactableOutput("reactable_long"),
-                              ),
+                              #),
                             ),
+                            tabPanel(
+                              "Trends",
+                              #wellPanel(
+                                reactableOutput("reactable_trends") %>% withSpinner(),
+                              #)
+                            )
                           )
                         )
                    )

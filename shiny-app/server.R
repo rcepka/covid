@@ -7,7 +7,7 @@
 #    http://shiny.rstudio.com/
 #
 
-source("get_data.R")
+#source("get_data.R")
 
 # Define server logic required to draw a histogram
 function(input, output, session) {
@@ -27,6 +27,24 @@ function(input, output, session) {
       filter(location %in% input$countries) %>%
       filter(metric == input$variables)
     )
+
+  data_selected_trends <- reactive(
+    data_wide %>%
+      na.omit() %>%
+      filter(location %in% input$countries) %>%
+      select(1, input$variables) %>%
+      group_by(location) %>%
+      summarise(across(where(is.numeric), list))
+    )
+
+  data_selected_trends_long <- reactive(
+    data_long %>%
+      na.omit() %>%
+      filter(location %in% input$countries) %>%
+      filter(metric == input$variables) %>%
+      group_by(location) %>%
+      summarise(across(where(is.numeric), list))
+  )
 
 
    output$plotly_long <- renderPlotly({
@@ -74,6 +92,7 @@ function(input, output, session) {
         sortable = T,
         resizable = T,
         striped = T,
+        fullWidth = T,
         showPageSizeOptions = TRUE,
         pageSizeOptions = c(10, 15, 20, 30, 50, 100),
         defaultPageSize = 15,
@@ -92,9 +111,132 @@ function(input, output, session) {
         )
     })
 
+
+
+
   # output$reactable_long <- renderReactable({
   #   data_selected_long() %>% reactable()
   #   })
+
+
+
+
+# #Orig version of table
+#   output$reactable_trends <- renderReactable({
+#     data_selected_trends() %>%
+#       reactable(
+#         .,
+#         theme = pff(centered = TRUE),
+#         compact = TRUE,
+#         columns = list(
+#           index[2] = colDef(
+#             cell = react_sparkline(
+#               data = .,
+#               height = 100,
+#               line_width = 1.5,
+#               bandline = 'innerquartiles',
+#               bandline_color = 'forestgreen',
+#               bandline_opacity = 0.6,
+#               labels = c('min','max'),
+#               label_size = '0.9em',
+#               highlight_points = highlight_points(min = 'blue', max = 'red'),
+#               margin = reactablefmtr::margin(t=15,r=2,b=15,l=2),
+#               tooltip_type = 2
+#             )
+#           )
+#         )
+#       )
+
+# # Trends table based on data_wide
+#     output$reactable_trends <- renderReactable({
+#       trends2 %>% reactable(
+#       .,
+#       #theme = pff(centered = TRUE),
+#       compact = F,
+#       defaultColDef = colDef(
+#         vAlign = "center"
+#       ),
+#       columns = list(
+#         location = colDef(
+#           width = 200
+#         ),
+#         total_cases = colDef(
+#           width = 600,
+#           cell = react_sparkline(
+#             data = .,
+#             height = 100,
+#             line_width = 1.5,
+#             bandline = 'innerquartiles',
+#             bandline_color = 'forestgreen',
+#             bandline_opacity = 0.6,
+#             labels = c('min','max'),
+#             label_size = '0.9em',
+#             highlight_points = highlight_points(min = 'blue', max = 'red'),
+#             margin = reactablefmtr::margin(t=15,r=2,b=15,l=2),
+#             tooltip_type = 2
+#           )
+#         ),
+#         new_cases = colDef(
+#           width = 600,
+#           cell = react_sparkline(
+#             data = .,
+#             height = 100,
+#             line_width = 1.5,
+#             bandline = 'innerquartiles',
+#             bandline_color = 'forestgreen',
+#             bandline_opacity = 0.6,
+#             labels = c('min','max'),
+#             label_size = '0.9em',
+#             highlight_points = highlight_points(min = 'blue', max = 'red'),
+#             margin = reactablefmtr::margin(t=15,r=2,b=15,l=2),
+#             tooltip_type = 2
+#           )
+#         )
+#       )
+#     )
+#       })
+
+
+
+
+
+
+
+    # Trends table based on data_long
+    output$reactable_trends <- renderReactable({
+      data_selected_trends_long() %>% reactable(
+        .,
+        theme = pff(centered = TRUE),
+        compact = FALSE,
+        defaultColDef = colDef(
+          vAlign = "center"
+        ),
+        columns = list(
+          location = colDef(
+            width = 200
+          ),
+          values = colDef(
+            width = 600,
+            cell = react_sparkline(
+              data = .,
+              height = 100,
+              line_width = 1.5,
+              bandline = 'innerquartiles',
+              bandline_color = 'forestgreen',
+              bandline_opacity = 0.6,
+              labels = c('min','max'),
+              label_size = '0.9em',
+              highlight_points = highlight_points(min = 'blue', max = 'red'),
+              margin = reactablefmtr::margin(t=15,r=2,b=15,l=2),
+              tooltip_type = 2
+            )
+          )
+        )
+      )
+    })
+
+
+
 
 
 }
