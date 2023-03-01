@@ -47,6 +47,9 @@ function(input, output, session) {
   )
 
 
+
+
+
    output$plotly_long <- renderPlotly({
 
      plot_ly(data_selected_long(),
@@ -84,7 +87,10 @@ function(input, output, session) {
      })
 
 
+
+
   output$reactable_wide <- renderReactable({
+
     data_selected_wide() %>%
       reactable(
         filterable = T,
@@ -121,102 +127,26 @@ function(input, output, session) {
 
 
 
-# #Orig version of table
-#   output$reactable_trends <- renderReactable({
-#     data_selected_trends() %>%
-#       reactable(
-#         .,
-#         theme = pff(centered = TRUE),
-#         compact = TRUE,
-#         columns = list(
-#           index[2] = colDef(
-#             cell = react_sparkline(
-#               data = .,
-#               height = 100,
-#               line_width = 1.5,
-#               bandline = 'innerquartiles',
-#               bandline_color = 'forestgreen',
-#               bandline_opacity = 0.6,
-#               labels = c('min','max'),
-#               label_size = '0.9em',
-#               highlight_points = highlight_points(min = 'blue', max = 'red'),
-#               margin = reactablefmtr::margin(t=15,r=2,b=15,l=2),
-#               tooltip_type = 2
-#             )
-#           )
-#         )
-#       )
-
-# # Trends table based on data_wide
-#     output$reactable_trends <- renderReactable({
-#       trends2 %>% reactable(
-#       .,
-#       #theme = pff(centered = TRUE),
-#       compact = F,
-#       defaultColDef = colDef(
-#         vAlign = "center"
-#       ),
-#       columns = list(
-#         location = colDef(
-#           width = 200
-#         ),
-#         total_cases = colDef(
-#           width = 600,
-#           cell = react_sparkline(
-#             data = .,
-#             height = 100,
-#             line_width = 1.5,
-#             bandline = 'innerquartiles',
-#             bandline_color = 'forestgreen',
-#             bandline_opacity = 0.6,
-#             labels = c('min','max'),
-#             label_size = '0.9em',
-#             highlight_points = highlight_points(min = 'blue', max = 'red'),
-#             margin = reactablefmtr::margin(t=15,r=2,b=15,l=2),
-#             tooltip_type = 2
-#           )
-#         ),
-#         new_cases = colDef(
-#           width = 600,
-#           cell = react_sparkline(
-#             data = .,
-#             height = 100,
-#             line_width = 1.5,
-#             bandline = 'innerquartiles',
-#             bandline_color = 'forestgreen',
-#             bandline_opacity = 0.6,
-#             labels = c('min','max'),
-#             label_size = '0.9em',
-#             highlight_points = highlight_points(min = 'blue', max = 'red'),
-#             margin = reactablefmtr::margin(t=15,r=2,b=15,l=2),
-#             tooltip_type = 2
-#           )
-#         )
-#       )
-#     )
-#       })
-
-
-
-
-
-
 
     # Trends table based on data_long
     output$reactable_trends <- renderReactable({
       data_selected_trends_long() %>% reactable(
         .,
-        theme = pff(centered = TRUE),
+        theme = pff(
+          centered = TRUE,
+          font_size = 20,
+          header_font_size = 24
+          ),
         compact = FALSE,
         defaultColDef = colDef(
           vAlign = "center"
         ),
         columns = list(
           location = colDef(
-            width = 200
+            width = 250
           ),
           values = colDef(
-            width = 600,
+            width = 800,
             cell = react_sparkline(
               data = .,
               height = 100,
@@ -224,6 +154,7 @@ function(input, output, session) {
               bandline = 'innerquartiles',
               bandline_color = 'forestgreen',
               bandline_opacity = 0.6,
+              show_area = T,
               labels = c('min','max'),
               label_size = '0.9em',
               highlight_points = highlight_points(min = 'blue', max = 'red'),

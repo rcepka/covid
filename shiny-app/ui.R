@@ -7,25 +7,7 @@
 #    http://shiny.rstudio.com/
 #
 
-# if (!require("pacman")) install.packages("pacman")
-#
-print("starting the app!")
 
-# print("Loading r packages with Pacman")
-#
-# pacman::p_load(
-#   shiny,
-#   tidyverse,
-#   ggplot2,
-#   plotly,
-#   reactable,
-#   reactablefmtr,
-#   shinyWidgets,
-#   bslib,
-#   lubridate,
-#   dataui,
-#   shinycssloaders
-# )
 
 print("going to get the data.")
 #source("get_data.R")
@@ -81,11 +63,13 @@ ui <- fluidPage(
                           #   )
                           ),
 
+
                    column(10,
 
                           tabsetPanel(
                             tabPanel(
                               "Plot",
+                              class = "p-5 m-5",
                               #wellPanel(
                                 plotlyOutput("plotly_long", height = "750px") %>% withSpinner()
                               #)
@@ -97,8 +81,8 @@ ui <- fluidPage(
                             tabPanel(
                               "Data explorer",
                               #wellPanel(
-                                reactableOutput("reactable_wide"),
-                                reactableOutput("reactable_long"),
+                                reactableOutput("reactable_wide")
+                                #reactableOutput("reactable_long")
                               #),
                             ),
                             tabPanel(
