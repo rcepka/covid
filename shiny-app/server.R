@@ -74,7 +74,7 @@ function(input, output, session) {
                list(count=1, label="1m", step="month", stepmode="backward"),
                list(count=6, label="6m", step="month", stepmode="backward"),
                list(count=1, label="YTD", step="year", stepmode="todate"),
-               list(count=1, label="1y", step="year", stepmode="backward"),
+               list(count=1, label="1rok", step="year", stepmode="backward"),
                list(step="all")
                )
              )
@@ -110,7 +110,7 @@ function(input, output, session) {
           width = 200
           ),
         columns = list(
-          location = colDef(name = "Krajina", align = "left"),
+          location = colDef(name = "Krajina/štát", align = "left"),
           iso_code = colDef(show = F),
           continent = colDef(show = F),
           date = colDef(name = "Dátum")
@@ -166,22 +166,24 @@ function(input, output, session) {
           font_size = 20,
           header_font_size = 24
           ),
+        fullWidth = T,
         compact = FALSE,
         defaultColDef = colDef(
           vAlign = "center"
         ),
         columns = list(
           location = colDef(
-            name = "Krajina",
-            width = 250
+            name = "Krajina/štát",
+            width = 250,
+            align = "left"
           ),
           values = colDef(
             name = "Trend",
-            width = 800,
+            minWidth = 800,
             align = "center",
             cell = react_sparkline(
               data = .,
-              height = 100,
+              height = 120,
               line_width = 1.5,
               bandline = 'innerquartiles',
               bandline_color = 'forestgreen',

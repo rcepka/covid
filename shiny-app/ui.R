@@ -40,13 +40,13 @@ ui <- fluidPage(
                             choices = setNames(variables$variables_id, variables$variables_names),
                             selected = "total_cases_per_million",
                           ),
-                          br(),
-                          prettySwitch(
-                            inputId = "relative_to_population",
-                            label = "Relative to population",
-                            status = "success",
-                            fill = TRUE
-                          ),
+                          # br(),
+                          # prettySwitch(
+                          #   inputId = "relative_to_population",
+                          #   label = "Relative to population",
+                          #   status = "success",
+                          #   fill = TRUE
+                          # ),
 
                           # card(
                           #   card_header(
@@ -81,6 +81,7 @@ ui <- fluidPage(
                                 reactableOutput("reactable_wide", width = "75%")
                               #)
                             ),
+
                             tabPanel(
                               "Zobrazenie trendov",
                               fluidRow(
@@ -89,11 +90,26 @@ ui <- fluidPage(
                                         reactableOutput("reactable_trends") %>% withSpinner()
                                 ),
                                 column(2,
-                                       "hello, text")
-                              )
-                            )
-                          )
-                        )
-                   )
-             )
-    )
+                                       class="mt-3",
+
+                                       card(
+                                         # class="m-0 p-0",
+                                         # full_screen = T,
+                                         # width="350px",
+                                         # card_header(
+                                         #   class = "bg-dark",
+                                         #   "A header"
+                                         # ),
+                                         card_body(
+                                         markdown("Some text with a [link](https://github.com)"),
+                                         "just some text, no mardown, and making it longer, and longer and longer ...."
+                                         )
+                                       )
+                                    ) # column end
+                                ) # fluidrow end
+                              ) # tabpanel end
+                        ) # tabsetpanel end
+                   ) # column end
+             ) #fluidrow end
+    ) # navbarpage
+)

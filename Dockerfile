@@ -7,8 +7,6 @@ RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     cron \
     nano
 
-
-
 ## update system libraries
 RUN apt-get update && \
     apt-get upgrade -y && \
@@ -21,14 +19,14 @@ RUN apt-get update && \
 RUN touch /var/log/cron.log
 #RUN chmod 0644 /var/log/cron.log
 
-
-
 CMD service cron start
+
 
 
 
 COPY /shiny-app ./shiny-app
 
+#WORKDIR ./shiny-app
 
 
 # install renv & restore packages
