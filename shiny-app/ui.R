@@ -9,14 +9,10 @@
 
 
 
-print("going to get the data.")
-#source("get_data.R")
-
-
 # FliudPage()
 ui <- fluidPage(
 
-    navbarPage("Covid - the global situation",
+    navbarPage("Covid - globálna situácia",
                  theme = bs_theme(version = 5, bootswatch = "minty"),
                  # tabPanel("Component 1"),
                  # tabPanel("Component 2"),
@@ -32,7 +28,7 @@ ui <- fluidPage(
 
                           multiInput(
                             inputId = "countries",
-                            label = tags$h5("Select countries"),
+                            label = tags$h5("Vyberte krajiny"),
                             choices = countries_list,
                             selected = c("Slovakia", "Austria", "Czechia", "Hungary", "Germany"),
                             options = list(
@@ -40,7 +36,7 @@ ui <- fluidPage(
                             ),
                           selectInput(
                             "variables",
-                            label = tags$h5("Select metric"),
+                            label = tags$h5("Vyberte premennú"),
                             choices = setNames(variables$variables_id, variables$variables_names),
                             selected = "total_cases_per_million",
                           ),
@@ -68,8 +64,8 @@ ui <- fluidPage(
 
                           tabsetPanel(
                             tabPanel(
-                              "Plot",
-                              class = "p-5 m-5",
+                              "Graf",
+                              class = "m-3",
                               #wellPanel(
                                 plotlyOutput("plotly_long", height = "750px") %>% withSpinner()
                               #)
@@ -79,14 +75,15 @@ ui <- fluidPage(
                             #   source("testUI.R")
                             # ),
                             tabPanel(
-                              "Data explorer",
+                              "Zdroj dát",
+                              class = "m-3",
                               #wellPanel(
-                                reactableOutput("reactable_wide")
-                                #reactableOutput("reactable_long")
-                              #),
+                                reactableOutput("reactable_wide", width = "75%")
+                              #)
                             ),
                             tabPanel(
-                              "Trends",
+                              "Zobrazenie trendov",
+                              class="m-3",
                               #wellPanel(
                                 reactableOutput("reactable_trends") %>% withSpinner(),
                               #)
@@ -94,6 +91,5 @@ ui <- fluidPage(
                           )
                         )
                    )
-
-)
-)
+             )
+    )

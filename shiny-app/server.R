@@ -12,14 +12,13 @@
 # Define server logic required to draw a histogram
 function(input, output, session) {
 
-  #bs_themer()
 
 
   #Prepare the data frame
   data_selected_wide <- reactive(
     data_wide %>%
       filter(location %in% input$countries) %>%
-      select(1, 2, input$variables)
+      select(1, 2, 3, 4, input$variables)
     )
 
   data_selected_long <- reactive(
@@ -49,7 +48,7 @@ function(input, output, session) {
 
 
 
-
+# Render chart witjh Plotly
    output$plotly_long <- renderPlotly({
 
      plot_ly(data_selected_long(),
@@ -62,7 +61,7 @@ function(input, output, session) {
        layout(
          showlegend = T,
          #plot_bgcolor='#e5ecf6',
-         title= input$variables,
+         title = input$variables %>% gsub("_", " ", . , fixed = TRUE) %>% str_to_title(.),
          xaxis = list(
            title = "",
            showgrid = F,
@@ -88,11 +87,12 @@ function(input, output, session) {
 
 
 
-
+# Reactable rendering
   output$reactable_wide <- renderReactable({
 
     data_selected_wide() %>%
       reactable(
+        #width = "75%",
         filterable = T,
         searchable = T,
         sortable = T,
@@ -110,9 +110,38 @@ function(input, output, session) {
           width = 200
           ),
         columns = list(
-          location = colDef(align = "left"),
-          #iso_code = colDef(show = F),
-          continent = colDef(show = F)
+          location = colDef(name = "Krajina", align = "left"),
+          iso_code = colDef(show = F),
+          continent = colDef(show = F),
+          date = colDef(name = "Dátum")
+          ),
+        language = reactableLang(
+          sortLabel = "Sort {name}",
+          filterPlaceholder = "",
+          filterLabel = "Filtruj {name}",
+          searchPlaceholder = "Hľadaj",
+          searchLabel = "Hľadaj",
+          noData = "Hľadanie neprinieslo žiadne výsledky",
+          pageNext = "Ďalej",
+          pagePrevious = "Späť",
+          pageNumbers = "{page} z {pages}",
+          pageInfo = "{rowStart}\u2013{rowEnd} z {rows} riedkov",
+          pageSizeOptions = "Ukáž {rows}",
+          pageNextLabel = "Ďalšia strana",
+          pagePreviousLabel = "Predchádzajúca strana",
+          pageNumberLabel = "Strana {page}",
+          pageJumpLabel = "Choď na stranu",
+          pageSizeOptionsLabel = "Riadkov na stranu",
+          groupExpandLabel = "Toggle group",
+          detailsExpandLabel = "Toggle details",
+          selectAllRowsLabel = "Vyber všetky riadky",
+          selectAllSubRowsLabel = "Select all rows in group",
+          selectRowLabel = "Select row",
+          defaultGroupHeader = NULL,
+          detailsCollapseLabel = NULL,
+          deselectAllRowsLabel = NULL,
+          deselectAllSubRowsLabel = NULL,
+          deselectRowLabel = NULL
           )
         )
     })
@@ -143,10 +172,13 @@ function(input, output, session) {
         ),
         columns = list(
           location = colDef(
+            name = "Krajina",
             width = 250
           ),
           values = colDef(
+            name = "Trend",
             width = 800,
+            align = "center",
             cell = react_sparkline(
               data = .,
               height = 100,
