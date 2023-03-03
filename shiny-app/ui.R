@@ -83,10 +83,14 @@ ui <- fluidPage(
                             ),
                             tabPanel(
                               "Zobrazenie trendov",
-                              class="m-3",
-                              #wellPanel(
-                                reactableOutput("reactable_trends") %>% withSpinner(),
-                              #)
+                              fluidRow(
+                                column(9,
+                                       class="m-3",
+                                        reactableOutput("reactable_trends") %>% withSpinner()
+                                ),
+                                column(2,
+                                       "hello, text")
+                              )
                             )
                           )
                         )
