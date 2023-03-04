@@ -30,7 +30,7 @@ ui <- fluidPage(
                             inputId = "countries",
                             label = tags$h5("Vyberte krajiny"),
                             choices = countries_list,
-                            selected = c("Slovakia", "Austria", "Czechia", "Hungary", "Germany"),
+                            selected = c("SVK", "Rakúsko", "Česko", "Maďarsko", "Nemecko"),
                             options = list(
                               enable_search = TRUE),
                             ),

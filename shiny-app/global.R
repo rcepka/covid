@@ -26,16 +26,15 @@ pacman::p_load(
 
 if (!file.exists("data/covid.csv") == "TRUE") {
 
-  print("downloading file because doesnt exists or is old.")
-  cat(paste0(Sys.time(), "downloading file because doesnt exists or is old.\n"))
-
+  cat(paste0(Sys.time(), " downloading file because doesnt exists or is old.\n"))
   download.file("https://covid.ourworldindata.org/data/owid-covid-data.csv", "data/covid.csv")
 
 } else {
 
-    print("file exists, skip downloading.")
+    cat(paste0(Sys.time(), " file exists, skip downloading.\n"))
 
   }
+
 
 
 # import data set into R
@@ -90,9 +89,27 @@ data_wide <- data_all %>%
     excess_mortality_cumulative_per_million,
     extreme_poverty
     )
-
 print("Main data table ready")
 
+
+
+countries <- read_csv(
+  file = "data/world_countries.csv",
+  col_select = c(3, "sk")
+  ) %>%
+  rename(iso_code = 1,
+         country = 2
+         ) %>%
+  mutate(iso_code = toupper((iso_code)))
+
+
+
+
+data_wide <- left_join(data_wide, countries, by="iso_code") %>%
+  relocate(country, .after = location) %>%
+  select(-location) %>%
+  rename(location = country) %>%
+  filter(!is.na(location))
 
 
 print("Creating data long data frame")
