@@ -26,6 +26,12 @@ COPY /app-chart ./app-chart
 COPY /app-map ./app-map
 
 
+# shiny-server runs at 3838
+COPY /app-chart/shiny-server.conf /etc/shiny-server/shiny-server.conf
+# Shiny server runs at 3838
+COPY /app-map/shiny-server.conf /etc/shiny-server/shiny-server.conf
+
+
 
 
 # install renv & restore packages
