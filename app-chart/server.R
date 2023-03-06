@@ -148,15 +148,6 @@ function(input, output, session) {
 
 
 
-
-  # output$reactable_long <- renderReactable({
-  #   data_selected_long() %>% reactable()
-  #   })
-
-
-
-
-
     # Trends table based on data_long
     output$reactable_trends <- renderReactable({
       data_selected_trends_long() %>% reactable(
@@ -199,9 +190,6 @@ function(input, output, session) {
         )
       )
     })
-
-
-
 
 
 }

@@ -12,15 +12,11 @@
 # FliudPage()
 ui <- fluidPage(
 
-    navbarPage("Covid - globálna situácia",
+    navbarPage("Covid - globálna situácia, zobrazenie formou grafu",
                  theme = bs_theme(version = 5, bootswatch = "minty"),
                  # tabPanel("Component 1"),
                  # tabPanel("Component 2"),
                  # tabPanel("Component 3"),
-
-
-                 # Application title
-                 #titlePanel("Global Covid situation exploration"),
 
 
              fluidRow(
@@ -29,8 +25,9 @@ ui <- fluidPage(
                           multiInput(
                             inputId = "countries",
                             label = tags$h5("Vyberte krajiny"),
-                            choices = countries_list,
-                            selected = c("SVK", "Rakúsko", "Česko", "Maďarsko", "Nemecko"),
+                            #choices = countries_list,
+                            choices = countries$country,
+                            selected = c("Slovensko", "Rakúsko", "Česko", "Maďarsko", "Nemecko"),
                             options = list(
                               enable_search = TRUE),
                             ),
@@ -65,51 +62,25 @@ ui <- fluidPage(
                           tabsetPanel(
                             tabPanel(
                               "Graf",
-                              class = "m-3",
+                              class = "p-3 border border-top-0 rounded-bottom",
                               #wellPanel(
                                 plotlyOutput("plotly_long", height = "750px") %>% withSpinner()
                               #)
                             ),
-                            # tabPanel(
-                            #   "Interactive map",
-                            #   source("testUI.R")
-                            # ),
                             tabPanel(
                               "Zdroj dát",
-                              class = "m-3",
+                              class = "p-3 border border-top-0 rounded-bottom",
                               #wellPanel(
                                 reactableOutput("reactable_wide", width = "75%")
                               #)
                             ),
-
                             tabPanel(
                               "Zobrazenie trendov",
-                              fluidRow(
-                                column(9,
-                                       class="m-3",
-                                        reactableOutput("reactable_trends") %>% withSpinner()
-                                ),
-                                column(2,
-                                       class="mt-3",
-
-                                       card(
-                                         # class="m-0 p-0",
-                                         # full_screen = T,
-                                         # width="350px",
-                                         # card_header(
-                                         #   class = "bg-dark",
-                                         #   "A header"
-                                         # ),
-                                         card_body(
-                                         markdown("Some text with a [link](https://github.com)"),
-                                         "just some text, no mardown, and making it longer, and longer and longer ...."
-                                         )
-                                       )
-                                    ) # column end
-                                ) # fluidrow end
-                              ) # tabpanel end
-                        ) # tabsetpanel end
-                   ) # column end
+                              class="p-3 border border-top-0 rounded-bottom",
+                              reactableOutput("reactable_trends") %>% withSpinner()
+                              )
+                            )
+                          ) # column end
              ) #fluidrow end
     ) # navbarpage
 )

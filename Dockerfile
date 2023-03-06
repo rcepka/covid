@@ -22,13 +22,14 @@ RUN touch /var/log/cron.log
 
 
 
-COPY /shiny-app ./shiny-app
+COPY /app-chart ./app-chart
+COPY /app-map ./app-map
 
-#WORKDIR ./shiny-app
+
 
 
 # install renv & restore packages
-RUN Rscript /shiny-app/inc/install_packages.R
+RUN Rscript /app-chart/inc/install_packages.R
 
 
 CMD service cron start
@@ -40,7 +41,7 @@ RUN service cron start
 
 # Setup cron job
 RUN (crontab -l ; echo "* * * * * echo "Hello cron world" >> /var/log/cron.log") | crontab
-RUN (crontab -l ; echo "*/2 * * * * Rscript /shiny-app/inc/get_data.R  >> /var/log/cron.log") | crontab
+RUN (crontab -l ; echo "*/2 * * * * Rscript /app-chart/inc/get_data.R  >> /var/log/cron.log") | crontab
 
 
 
@@ -52,7 +53,9 @@ CMD cron && tail -f /var/log/cron.log
 
 # expose port
 EXPOSE 3838
+EXPOSE 3839
 
 
 # run app on container start
-CMD ["R", "-e", "shiny::runApp('/shiny-app', host = '0.0.0.0', port = 3838)"]
+CMD ["R", "-e", "shiny::runApp('/app-chart', host = '0.0.0.0', port = 3838)"]
+CMD ["R", "-e", "shiny::runApp('/app-map', host = '0.0.0.0', port = 3839)"]

@@ -125,7 +125,7 @@ data_long <- data_wide %>%
 print("Generating Select input widgets data")
 
 # List of countries
-countries_list <- unique(data_wide$location)
+#countries_list <- unique(data_wide$location)
 
 # Metrics/variables
 variables_id <- colnames(data_wide)
@@ -138,33 +138,3 @@ variables <- data.frame(variables_id, variables_names)
 all_colnames <- as_tibble(colnames(data_all))
 all_colnames <- data_all %>% select(1:4, order(colnames(.))) %>% colnames() %>% as_tibble()
 
-
-
-
-#
-# Summary data to display on the map
-#
-print("Genrating data for LEaflet mapping")
-summary <- data_wide %>%
-  group_by(location) %>%
-  summarise(
-    #total_cases = max(total_cases, na.rm = TRUE),
-    total_deaths = max(total_deaths, na.rm = T),
-    new_deaths = sum(new_deaths, na.rm = T)
-  )
-
-# library(leaflet)
-# library(maps)
-#
-# summary %>% leaflet() %>%
-#   addTiles()
-# map("svk")
-
-
-#
-#   print("Deleting file")
-#   cat(paste0(Sys.time(), "Now we are delete the file with data, because we want to test if it will be correctly downloaded again!!!\n
-#              again\nagain\nagain\nagain\nagain\nagain\nagain\nagain\nagain\nagain\n"))
-#
-# unlink("data/covid.csv")
-# cat(paste0(Sys.time(), "File was probably deleted .....\n"))
