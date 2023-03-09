@@ -59,9 +59,9 @@ CMD cron && tail -f /var/log/cron.log
 
 # expose port
 EXPOSE 3838
-EXPOSE 3839
+#EXPOSE 3839
 
 
 # run app on container start
 CMD ["R", "-e", "shiny::runApp('/app-chart', host = '0.0.0.0', port = 3838)"]
-CMD ["R", "-e", "shiny::runApp('/app-map', host = '0.0.0.0', port = 3839)"]
+CMD ["R", "-e", "shiny::runApp('/app-map', host = '0.0.0.0', port = 3838)"]

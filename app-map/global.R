@@ -40,6 +40,10 @@ start_date <- as.Date("2021-01-01")
 end_date <- today() - 1
 i <- interval(start_date, end_date) %/% days(1)
 
+date_range <- seq(start_date, end_date, "days")
+date_range_formatted <- format(date_range, format = "%m-%d-%Y")
+
+
 start_date + 1
 
 date <- today() - 1
