@@ -411,24 +411,11 @@ countries_table <- data_all %>%
 
 
 
-  # plot_cases_weekly <- data_weekly %>%
-  #   plot_ly() %>%
-  #   add_bars(x = ~Date, y = ~Cases.New, color = I("red")) %>%
-  #   layout(height = 300)
-  #
-  # plot_deaths_weekly <- data_weekly %>%
-  #   plot_ly() %>%
-  #   add_bars(x = ~Date, y = ~Deaths.New, color = I("white"))
-  #
-  # plot_doses_weekly <- data_weekly %>%
-  #   plot_ly() %>%
-  #   add_bars(x = ~Date, y = ~Doses_admin.New, color = I("green"))
-  #
-  # subplot(
-  #   plot_cases_weekly,
-  #   plot_deaths_weekly,
-  #   plot_doses_weekly,
-  #         nrows = 3)
+
+
+
+
+
 
 
 

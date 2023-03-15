@@ -35,8 +35,8 @@ navbarPage(
 
   theme = bs_theme(
     version = 5,
-     bg = "#353535",
-     fg = "#151515",
+     # bg = "#353535",
+     # fg = "#151515",
    # primary = "#092c74",
     bootswatch = "darkly"
     ),
@@ -47,62 +47,80 @@ navbarPage(
 
 
   fluidRow(
-    class = "bg-dark",
+    #class = "bg-dark",
 
 
 
-    tags$style(HTML("
-        .tabs > .nav > li[class=active] > a {
-           #background-color: #fff;
-           color: #FFFFFF;
-        }")),
+  #   tags$style(HTML("
+  #   .tabbable > .nav > li > a                  {background-color: white;  color:black}
+  #   # .tabbable > .nav > li > a[data-value='t1'] {background-color: red;   color:white}
+  #   # .tabbable > .nav > li > a[data-value='t2'] {background-color: blue;  color:white}
+  #   # .tabbable > .nav > li > a[data-value='t3'] {background-color: green; color:white}
+  #   #.tabbable > .nav > li[class=active]    > a {background-color: white; color:black}
+  #   .tabbable > .nav > li[class=active]    > a {background-color: white; color:black}
+  # ")),
 
 
-    tags$style(
-      '
-      ul li:nth-child(1) {
-  width: 150px;
-  background-color: white;
-  #background-color: salmon;
-  color: #f50000;
-  }
 
-  ul li:nth-child(2) {
-  width: 250px;
-  background-color: salmon;
-  }
 
-  .nav-tabs li > a {
-  color: #FFFFFF;
-  }
 
-  ul li > a {
-  color: #FFFFFF;
-  }
 
-  '),
+
+ # tags$style(
+ #      '
+ #      ul li:nth-child(1) {
+ #  width: 150px;
+ #  background-color: white;
+ #  #background-color: salmon;
+ #  color: #f50000;
+ #  }
+ #
+ #  ul li:nth-child(2) {
+ #  width: 250px;
+ #  background-color: salmon;
+ #  }
+ #
+ #  ul li .nav-link a {
+ #  color: #FFFFFF;
+ #  }
+ #
+ #  ul li > a {
+ #  color: #FFFFFF;
+ #  }
+ #
+ #  '),
 
 
 
 
     column(2,
-           fluidRow(style = "height:100px;",
-             column(12, class="text-center fs-6 p-2 border border-5",
+           fluidRow(style = "height:130px;",
+             column(12, class="text-center fs-6",
+                    card(card_body(
                     tags$div(style="color:red;", "Aktualizované"),
                     tags$div(class="fs-3 text-white", last_update)
+                    ))
                     ),
            ),
            fluidRow(style = "height:70px;",
-                    column(12, class="text-center p-2 border border-bottom-0 border-5", style = "font-size:1.1rem;",
-                           tags$div(style="color:red;", "Prípady",
-                                    tags$span(class="text-white", "| Úmrtia podľa krajín/regiónov"),
-                           ),
-                    ),
+                    column(12, class="text-center",
+                           card(
+                            card_body(
+                              tags$div(class="fs-6", style="color:red;", "Prípady",
+                                       tags$span(class="text-white", "| Úmrtia podľa krajín/regiónov")
+                              )
+                            )
+                           )
+                    )
            ),
-           fluidRow(
-             column(12, class = "text-center p-0 border border-top-0 border-5", style = "height:705px",
-                    reactableOutput("table"),
-                    ),
+           fluidRow(class="p-0 m-0", #style = "height:705px",
+             column(12, class = "text-center p-0 m-0",
+                    card(class="p-0 m-0",
+                         card_body(class="p-0 m-0",
+                                   reactableOutput("table")
+                         )
+                    )
+             ),
            ),
     ),
     column(7,
@@ -134,17 +152,17 @@ navbarPage(
            fluidRow(
              column(12, class="text-center", style = "height:875px",
 
-                    "MAP",
+                    card(card_body("MAP")),
                     #plotlyOutput("subplot_weekly")
                     )
            ),
     ),
-    column(3, class="text-center border border-5 p-0 m-0", style = "height:875px",
-           tags$div(class="robo", tabsetPanel(
-             tabPanel("Týždenne", plotlyOutput("subplot_weekly")),
+    column(3, class="text-center",
+           tabsetPanel(
+             tabPanel("Týždenne", card(card_body(class="mt-5", height = 825, plotlyOutput("subplot_weekly")))),
              tabPanel("28-dní")
 
-           ))
+           )
            # plotlyOutput("plot_cases_weekly"),
            # plotlyOutput("plot_deaths_weekly"),
            # plotlyOutput("plot_doses_weekly"),

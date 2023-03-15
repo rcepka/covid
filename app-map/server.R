@@ -24,11 +24,13 @@ function(input, output, session) {
     countries_table <- data_all %>%
       select(1, 3, 4) %>%
       reactable(
-        theme = cyborg(),
+        theme = reactableTheme(
+          backgroundColor = "transparent"
+        ),
         pagination = F,
         height = 700,
-        width = 305,
-        fullWidth = F,
+        #width = 275,
+        fullWidth = T,
         compact = T,
         #width = 100,
         columns = list(
@@ -40,7 +42,11 @@ function(input, output, session) {
               merged_position = "below",
               size = 13,
               merged_size = 10
-            ))
+            )
+          ),
+          Deaths = colDef(
+            show = F
+            )
         )
       )
 
@@ -49,15 +55,18 @@ function(input, output, session) {
 
 
 
-  output$plot_cases_weekly <- renderPlotly({
+
+
+  output$subplot_weekly <- renderPlotly({
+
 
     plot_cases_weekly <- data_weekly %>%
-    #data_weekly %>%
+      #data_weekly %>%
       plot_ly() %>%
       add_bars(x = ~Date, y = ~Cases.New, color = I("red")) %>%
       layout(
         title = "",
-        #height = 250,
+        #height = 450,
         plot_bgcolor  = "rgba(0, 0, 0, 0)",
         paper_bgcolor = "rgba(0, 0, 0, 0)",
         font = list(color = 'red'),
@@ -66,37 +75,35 @@ function(input, output, session) {
       ) %>%
       config(displayModeBar = FALSE)
 
-  })
 
 
-  output$plot_deaths_weekly <- renderPlotly({
+
 
     plot_deaths_weekly <- data_weekly %>%
-    #data_weekly %>%
+      #data_weekly %>%
       plot_ly(
         #height = 250
-        ) %>%
+      ) %>%
       add_bars(x = ~Date, y = ~Deaths.New, color = I("white")) %>%
       layout(
         plot_bgcolor  = "rgba(0, 0, 0, 0)",
         paper_bgcolor = "rgba(0, 0, 0, 0)",
         font = list(color = '#FFFFFF'),
         yaxis = list(title = "Úmrtia týždenne")
-        ) %>%
+      ) %>%
       config(displayModeBar = FALSE)
 
-  })
 
 
-  output$plot_doses_weekly <- renderPlotly({
 
     plot_doses_weekly <- data_weekly %>%
-    #data_weekly %>%
+      #data_weekly %>%
       plot_ly(
         #height = 250
-        ) %>%
+      ) %>%
       add_bars(x = ~Date, y = ~Doses_admin.New, color = I("green")) %>%
       layout(
+        #height = 250,
         plot_bgcolor  = "rgba(0, 0, 0, 0)",
         paper_bgcolor = "rgba(0, 0, 0, 0)",
         font = list(color = 'white'),
@@ -109,26 +116,20 @@ function(input, output, session) {
       ) %>%
       config(displayModeBar = FALSE)
 
-  })
-
-
-
-  output$subplot_weekly <- renderPlotly({
 
     subplot(
       plot_cases_weekly,
       plot_deaths_weekly,
       plot_doses_weekly,
-      #height = 750,
       titleY = T,
       titleX = F,
       margin = 0.045,
       nrows = 3
       ) %>%
       layout(
-        height = 970,
-        showlegend = F,
-        margin = list(b = 200)
+        height = 800,
+        #margin = list(b = 200),
+        showlegend = F
         ) %>%
       config(displayModeBar = F)
 
