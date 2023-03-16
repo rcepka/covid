@@ -47,59 +47,16 @@ navbarPage(
 
 
   fluidRow(
-    #class = "bg-dark",
-
-
-
-  #   tags$style(HTML("
-  #   .tabbable > .nav > li > a                  {background-color: white;  color:black}
-  #   # .tabbable > .nav > li > a[data-value='t1'] {background-color: red;   color:white}
-  #   # .tabbable > .nav > li > a[data-value='t2'] {background-color: blue;  color:white}
-  #   # .tabbable > .nav > li > a[data-value='t3'] {background-color: green; color:white}
-  #   #.tabbable > .nav > li[class=active]    > a {background-color: white; color:black}
-  #   .tabbable > .nav > li[class=active]    > a {background-color: white; color:black}
-  # ")),
-
-
-
-
-
-
-
- # tags$style(
- #      '
- #      ul li:nth-child(1) {
- #  width: 150px;
- #  background-color: white;
- #  #background-color: salmon;
- #  color: #f50000;
- #  }
- #
- #  ul li:nth-child(2) {
- #  width: 250px;
- #  background-color: salmon;
- #  }
- #
- #  ul li .nav-link a {
- #  color: #FFFFFF;
- #  }
- #
- #  ul li > a {
- #  color: #FFFFFF;
- #  }
- #
- #  '),
-
-
-
 
     column(2,
-           fluidRow(style = "height:130px;",
-             column(12, class="text-center fs-6",
-                    card(card_body(
-                    tags$div(style="color:red;", "Aktualizované"),
-                    tags$div(class="fs-3 text-white", last_update)
-                    ))
+           fluidRow(#style = "height:130px;",
+             column(12, class="text-center fs-6 align-middle",
+                    card(height = 100,
+                         card_body_fill(class="p-0 m-0 justify-content-center",
+                                   tags$div(style="color:red;", "Aktualizované"),
+                                   tags$div(class="fs-3 text-white", last_update)
+                                   )
+                         )
                     ),
            ),
            fluidRow(style = "height:70px;",
@@ -124,11 +81,15 @@ navbarPage(
            ),
     ),
     column(7,
-           fluidRow(style = "height:100px;",
-             column(4, class="text-center p-2 border border-5",
-                    tags$div(class="fs-6 color-white", "Prípadov spolu"),
-                    tags$div(class="fs-2", style="color:red;", format(data_all_summarized$TotalCases, big.mark = "."))
-                    ),
+           fluidRow(style = "height:130px;",
+             column(4, class="text-center",
+                    card(
+                      card_body(class="p-0 m-0", height = 130,
+                        tags$div(class="fs-6 color-white", "Prípadov spolu"),
+                        tags$div(class="fs-2", style="color:red;", format(data_all_summarized$TotalCases, big.mark = "."))
+                      )
+                    )
+             ),
              column(4, class="text-center p-2 border",
                     tags$div(class="fs-6 color-white", "Úmrtí spolu"),
                     tags$div(class="fs-2", style="color:red;", format(data_all_summarized$TotalDeaths, big.mark = "."))
