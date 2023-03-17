@@ -7,26 +7,26 @@
 #    http://shiny.rstudio.com/
 #
 
-
-
-if (!require("pacman")) install.packages("pacman")
-
-
-print("Loading r packages with Pacman")
-cat(paste0(Sys.time(), " Starting cron job...\n"))
-pacman::p_load(
-  shiny,
-  tidyverse,
-  ggplot2,
-  plotly,
-  reactable,
-  reactablefmtr,
-  shinyWidgets,
-  bslib,
-  lubridate,
-  dataui,
-  shinycssloaders
-)
+#
+#
+# if (!require("pacman")) install.packages("pacman")
+#
+#
+# print("Loading r packages with Pacman")
+# cat(paste0(Sys.time(), " Starting cron job...\n"))
+# pacman::p_load(
+#   shiny,
+#   tidyverse,
+#   ggplot2,
+#   plotly,
+#   reactable,
+#   reactablefmtr,
+#   shinyWidgets,
+#   bslib,
+#   lubridate,
+#   dataui,
+#   shinycssloaders
+# )
 
 
 
@@ -99,7 +99,7 @@ navbarPage(
              column(4, class="text-center",
                     card(height = 100, class="",
                          card_body_fill(class="p-0 justify-content-center",
-                           tags$div(class="fs-6 color-white", "Vakcinácií Spolu"),
+                           tags$div(class="fs-6 color-white", "Vakcinácií spolu"),
                            tags$div(class="fs-2", style="color:green;", format(data_total_sum$Vaccine.Doses.Total, big.mark = " "))
                          )
                     )
@@ -134,11 +134,13 @@ navbarPage(
            ),
 
            fluidRow(
-             column(12, class="text-center", style = "height:875px",
-
-                    card(card_body("MAP")),
-                    #plotlyOutput("subplot_weekly")
-                    textOutput("text")
+             column(12,
+                    card(height = 675,
+                         card_body_fill(
+                           class="p-0",
+                           leafletOutput("map")
+                           )
+                         )
                     )
            ),
     ),

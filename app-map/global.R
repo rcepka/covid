@@ -18,7 +18,11 @@ pacman::p_load(
   lubridate,
   dataui,
   shinycssloaders,
-  timetk
+  timetk,
+  leaflet,
+  sp,
+  sf,
+  rgdal
 )
 
 # get the date and time of actual update
@@ -430,3 +434,4 @@ if (!file.exists("data/vaccines.csv") == "TRUE") {
   #                     )
   #          ) %>%
   #   unnest(data)
+

@@ -23,7 +23,7 @@ function(input, output, session) {
           backgroundColor = "transparent"
         ),
         pagination = F,
-        height = 700,
+        height = 675,
         #width = 275,
         fullWidth = T,
         borderless = T,
@@ -62,6 +62,15 @@ function(input, output, session) {
         )
     )
 
+
+  })
+
+
+  output$map <- renderLeaflet({
+
+    leaflet(
+      height = "300px") %>%
+      addTiles()
 
   })
 
