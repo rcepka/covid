@@ -35,22 +35,19 @@ navbarPage(
 
   theme = bs_theme(
     version = 5,
-     # bg = "#353535",
-     # fg = "#151515",
-   # primary = "#092c74",
     bootswatch = "darkly"
     ),
 
 
   # Application title
-  titlePanel("Old Faithful Geyser Data"),
+  titlePanel("Koronavírus - prehľad situácie"),
 
 
   fluidRow(
 
     column(2,
-           fluidRow(#style = "height:130px;",
-             column(12, class="text-center fs-6 align-middle",
+           fluidRow(
+             column(12, class="text-center fs-6",
                     card(height = 100,
                          card_body_fill(class="p-0 m-0 justify-content-center",
                                    tags$div(style="color:red;", "Aktualizované"),
@@ -59,19 +56,19 @@ navbarPage(
                          )
                     ),
            ),
-           fluidRow(style = "height:70px;",
-                    column(12, class="text-center",
-                           card(
-                            card_body(
-                              tags$div(class="fs-6", style="color:red;", "Prípady",
-                                       tags$span(class="text-white", "| Úmrtia podľa krajín/regiónov")
-                              )
-                            )
-                           )
-                    )
-           ),
-           fluidRow(class="p-0 m-0", #style = "height:705px",
-             column(12, class = "text-center p-0 m-0",
+           fluidRow(
+              column(12, class="text-center",
+                     card(height = 70, class="p-0 m-0",
+                       card_body_fill(class = "ps-3 pe-3 pt-0 pb-0 m-0 justify-content-center",
+                        tags$div(class="fs-6 p-0 m-0", style="color:red;", "Prípady",
+                                 tags$span(class="text-white", "| Úmrtia podľa krajín/regiónov")
+                                 )
+                        )
+                       )
+                     )
+              ),
+           fluidRow(
+             column(12, class = "text-center", full_screen = TRUE,
                     card(class="p-0 m-0",
                          card_body(class="p-0 m-0",
                                    reactableOutput("table")
@@ -81,55 +78,84 @@ navbarPage(
            ),
     ),
     column(7,
-           fluidRow(style = "height:130px;",
+
+           fluidRow(
              column(4, class="text-center",
-                    card(
-                      card_body(class="p-0 m-0", height = 130,
-                        tags$div(class="fs-6 color-white", "Prípadov spolu"),
-                        tags$div(class="fs-2", style="color:red;", format(data_all_summarized$TotalCases, big.mark = "."))
+                    card(height = 100, class="",
+                      card_body_fill(class="p-0 justify-content-center",
+                                     tags$div(class="fs-6 color-white", "Prípadov spolu"),
+                                     tags$div(class="fs-2", style="color:red;", format(data_total_sum$Cases.total, big.mark = " "))
+                                     )
                       )
+                    ),
+             column(4, class="text-center",
+                    card(height = 100, class="",
+                         card_body_fill(class="p-0 text-white justify-content-center",
+                                        tags$div(class="fs-6", "Úmrtí spolu"),
+                                        tags$div(class="fs-2", format(data_total_sum$Deaths.total, big.mark = " "))
+                         )
+                    )
+                    ),
+             column(4, class="text-center",
+                    card(height = 100, class="",
+                         card_body_fill(class="p-0 justify-content-center",
+                           tags$div(class="fs-6 color-white", "Vakcinácií Spolu"),
+                           tags$div(class="fs-2", style="color:green;", format(data_total_sum$Vaccine.Doses.Total, big.mark = " "))
+                         )
                     )
              ),
-             column(4, class="text-center p-2 border",
-                    tags$div(class="fs-6 color-white", "Úmrtí spolu"),
-                    tags$div(class="fs-2", style="color:red;", format(data_all_summarized$TotalDeaths, big.mark = "."))
-                    ),
-             column(4, class="text-center p-2 border",
-                    tags$div(class="fs-6 color-white", "Vakcinácií Spolu"),
-                    tags$div(class="fs-2", style="color:green;", format(vaccines_summarised$People_at_least_one_dose, big.mark = "."))
-                    ),
            ),
+
            fluidRow(
-             column(4,
-                    "28-day cases"
+             column(4, class="text-center",
+                    card(height = 70,
+                         card_body_fill(class="p-0 justify-content-center",
+                          tags$div(class="text-white", "Prípady za 28 dní"),
+                          tags$div(class="fs-4", style="color:red;", format(data_total_28_days_sum$Cases.total.28, big.mark = " "))
+                         )
+                    )
              ),
-             column(4,
-                    "28-days deaths"
+             column(4, class="text-center",
+                    card(height = 70,
+                         card_body_fill(class="p-0 justify-content-center",
+                          tags$div(class="text-white", "Úmrtia za 28 dní"),
+                          tags$div(class="fs-4", style="color:red;", format(data_total_28_days_sum$Deaths.total.28, big.mark = " "))
+                          )
+                    )
              ),
-             column(4,
-                    "28-day vaccine doses"
-             ),
+             column(4, class="text-center",
+                    card(height = 70,
+                         card_body_fill(class="p-0 justify-content-center",
+                          tags$div(class="text-white", "Vakcinácia za 28 dní"),
+                          tags$div(class="fs-4", style="color:red;", format(data_total_28_days_sum$Vaccine.Doses.Total.28, big.mark = " "))
+                         )
+                    )
+             )
            ),
+
            fluidRow(
              column(12, class="text-center", style = "height:875px",
 
                     card(card_body("MAP")),
                     #plotlyOutput("subplot_weekly")
+                    textOutput("text")
                     )
            ),
     ),
-    column(3, class="text-center",
-           tabsetPanel(
-             tabPanel("Týždenne", card(card_body(class="mt-5", height = 825, plotlyOutput("subplot_weekly")))),
-             tabPanel("28-dní")
 
+    column(3,
+           tabsetPanel(
+             tabPanel("Týždenne",
+                      card(height = 825, full_screen = TRUE,
+                        card_body_fill(class="mt-3", plotlyOutput("subplot_weekly")))
+                      ),
+             tabPanel("28-dní",
+                      card(height = 825, full_screen = TRUE,
+                           card_body_fill(class="mt-3", plotlyOutput("subplot_28_days")))
+                      ),
            )
-           # plotlyOutput("plot_cases_weekly"),
-           # plotlyOutput("plot_deaths_weekly"),
-           # plotlyOutput("plot_doses_weekly"),
-           #plotlyOutput("subplot_weekly")
-           ),
-    )
+    ),
+  )
 )
 
 

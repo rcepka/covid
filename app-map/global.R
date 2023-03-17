@@ -22,7 +22,7 @@ pacman::p_load(
 )
 
 # get the date and time of actual update
-  last_update <- format(Sys.time(), format = "%d.%m.%Y %H:%M")
+  last_update <- format(Sys.time(), format = "%d.%m.%Y, %H:%M")
 
 
 # #############################
@@ -34,10 +34,10 @@ if (!file.exists("data/data_all.csv") == "TRUE") {
   cat(paste0(Sys.time(), " downloading the data all file because doesnt exists or is old.\n"))
 
 
-  date_of_file <- format(today() - 7, format = "%m-%d-%Y")
+  date_of_file <- format(today() - 8, format = "%m-%d-%Y")
   cat(paste0(Sys.time(), " downloading file of date: ", date_of_file, "\n"))
 
-  # BAse project url: https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data
+  # Base project url: https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data
 
   base_url <- "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/"
   urlfile <- paste0(base_url, date_of_file, ".csv")
@@ -137,9 +137,6 @@ if (!file.exists("data/cases.csv") == "TRUE") {
 
 
 
-
-
-
 # #############################
 # Confirmed deaths
 # #############################
@@ -190,7 +187,6 @@ if (!file.exists("data/deaths.csv") == "TRUE") {
   deaths_L <- read_csv("data/deaths_L.csv")
 
 }
-
 
 
 
@@ -250,7 +246,6 @@ if (!file.exists("data/recovered.csv") == "TRUE") {
 
 
 
-
 # #############################
 #  Vaccines
 # #############################
@@ -280,13 +275,6 @@ if (!file.exists("data/vaccines.csv") == "TRUE") {
     unnest(data)
 
 
-
-  # # filter only latest date records
-  # vaccines <- vaccines %>%
-  #   filter(Date == max(Date))
-  #   #bind_rows(summarise_all(., ~if(is.numeric(.)) sum(.) else "Total"))
-  #
-  #
   # Summerized vaccines
   vaccines_summarised <- vaccines %>%
     summarise(
@@ -310,31 +298,12 @@ if (!file.exists("data/vaccines.csv") == "TRUE") {
 
 
 
-# #############################
-# Table
-# #############################
 
-countries_table <- data_all %>%
-  select(1, 3, 4) %>%
-  reactable(
-    theme = cyborg(),
-    pagination = F,
-    height = 700,
-    fullWidth = F,
-    #width = 100,
-    columns = list(
-      Country_Region = colDef(name = "Štát")
-    )
-    )
+  # #############################
+  # Final data frames
+  # #############################
 
-
-
-
-
-# #############################
-# End data frames
-# #############################
-
+  # Basic df
   data_total <- left_join(
     cases_L, deaths_L, by = c("Country", "Date")
     )
@@ -349,78 +318,104 @@ countries_table <- data_all %>%
 
 
 
+  # Data total summarized
+  # Total Cases, Deaths, Recovered, Vaccinations
+  # Used in boxes above the map
+  data_total_sum <- data_total %>%
+    group_by(Country) %>%
+    mutate(Doses_admin = replace_na(Doses_admin, 0)) %>%
+    summarise(
+      Cases = max(Cases, na.rm = T),
+      Deaths = max(Deaths, na.rm = T),
+      Recovered = max(Recovered, na.rm = T),
+      Vaccine.Doses = max(Doses_admin, na.rm = TRUE)
+    ) %>%
+    summarize(
+      Cases.total = sum(Cases, na.rm = T),
+      Deaths.total = sum(Deaths, na.rm = T),
+      Recovered.Total = sum(Recovered, na.rm = T),
+      Vaccine.Doses.Total = sum(Vaccine.Doses, na.rm = T)
+    )
+
+  # Data last 28-days summarized
+  # the same as above but for 28-day period
+  data_total_28_days_sum <- data_total %>%
+    mutate(Doses_admin = replace_na(Doses_admin, 0)) %>%
+    group_by(Country) %>%
+    filter(Date > max(data_total$Date) - 28) %>%
+    # summarise(
+    #   Cases = max(Cases, na.rm = T),
+    #   Deaths = max(Deaths, na.rm = T),
+    #   Recovered = max(Recovered, na.rm = T),
+    #   Vaccine.Doses = max(Doses_admin, na.rm = TRUE)
+    # ) %>%
+    summarize(
+      Cases.total.28 = sum(Cases.New, na.rm = T),
+      Deaths.total.28 = sum(Deaths.New, na.rm = T),
+      Recovered.Total.28 = sum(Recovered.New, na.rm = T),
+      Vaccine.Doses.Total.28 = sum(Doses_admin.New, na.rm = T)
+    ) %>%
+    summarise_if(is.numeric, ~sum(.x, na.rm = T))
 
 
 
-  # # Add columns with new variables => new
-  # data_total <- data_total %>%
-  #   # mutate(
-  #   #   Cases.New = ifelse(Cases - lag(Cases) < 0, 0, Cases - lag(Cases)),
-  #   #   Deaths.New = ifelse(Deaths - lag(Deaths) < 0, 0, Deaths - lag(Deaths)),
-  #   #   Recovered.New = ifelse(Recovered - lag(Recovered) < 0, 0, Recovered - lag(Recovered)),
-  #   #   Doses_admin.New = ifelse(Doses_admin - lag(Doses_admin) < 0, 0, Doses_admin - lag(Doses_admin)),
-  #   #   People_at_least_one_dose.New = ifelse(People_at_least_one_dose - lag(People_at_least_one_dose) < 0, 0, People_at_least_one_dose - lag(People_at_least_one_dose))
-  #   # ) %>%
-  #   mutate(
-  #     Cases.New = Cases - lag(Cases),
-  #     Deaths.New = Deaths - lag(Deaths),
-  #     Recovered.New = Recovered - lag(Recovered),
-  #     Doses_admin.New = Doses_admin - lag(Doses_admin),
-  #     People_at_least_one_dose.New = People_at_least_one_dose - lag(People_at_least_one_dose)
-  #   ) %>%
-  #   relocate(Cases.New, .after = Cases) %>%
-  #   relocate(Deaths.New, .after = Deaths) %>%
-  #   relocate(Recovered.New, .after = Recovered) %>%
-  #   relocate(Doses_admin.New, .after = Doses_admin) %>%
-  #   relocate(People_at_least_one_dose.New, .after = People_at_least_one_dose)
 
-
-
-  # Create the list of date by week and 28-days period
-  start_date <- ymd(min(data_total$Date))
-  end_date <- ymd(max(data_total$Date))
-  dates_7_days <- seq(ymd(start_date), ymd(end_date), by = "7 days")
-  dates_28_days <- seq(ymd(start_date), ymd(end_date), by = "28 days")
-
-
-  data_weekly <- data_total %>%
+  # Data grouped by countries and summarised, DF for table at the left side of the screen
+  # Totals by countries
+  data_total_sum_by_countries_total <- data_total %>%
+    group_by(Country) %>%
+    summarize(
+      Cases.Total = max(Cases),
+      Deaths.total = max(Deaths)
+    )
+  # 28-day totals by countries
+  data_total_sum_by_countries_28_days <- data_total %>%
+    group_by(Country) %>%
+    summarize_by_time(
+      .date_var = Date,
+      .by = "month",
+      Cases.28 = sum(Cases.New),
+      Deaths.28 = sum(Deaths.New)
+    ) %>%
     #group_by(Country) %>%
-    filter(Date %in% dates_7_days) %>%
+    filter(Date == max(Date)) %>%
+    select(-Date)
+
+  # Merged into a single DF
+  data_total_sum_by_countries <- full_join(
+    data_total_sum_by_countries_total,
+    data_total_sum_by_countries_28_days,
+    by = "Country"
+  )
+
+
+
+  # ######################
+  # Prepare data for right-side charts - weekly and monthly
+  # Data are summarised by "Date"
+  # ######################
+
+  # Weekly
+  data_weekly <- data_total %>%
     group_by(Date) %>%
-    #summarise(across(Cases:People_at_least_one_dose.New, ~sum(.x, na.rm = T)))
-    summarise_if(is.numeric, sum, na.rm = TRUE)
+    summarise_by_time(
+      .date_var = Date,
+      .by = "week",
+      Cases.New.weekly = sum(Cases.New),
+      Deaths.New.weekly = sum(Deaths.New),
+      Doses_admin.New.weekly = sum(Doses_admin.New, na.rm = T)
+    )
 
-  data_monthly <- data_total %>%
-    filter(Date %in% dates_28_days) %>%
+  # Monthly
+  data_28_days <- data_total %>%
     group_by(Date) %>%
-    summarise_if(is.numeric, sum, na.rm = T)
-
-
-
-  # # Other way, using the Timetk library
-  # data_weekly <- data_total %>%
-  #   group_by(Date) %>%
-  #   summarise_by_time(
-  #     .date_var = Date,
-  #     .by = "week",
-  #     Cases = sum(Cases),
-  #     Cases.New2 = sum(Cases.New)
-  #   )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    summarise_by_time(
+      .date_var = Date,
+      .by = "month",
+      Cases.New.28_days = sum(Cases.New) / 30,
+      Deaths.New.28_days = sum(Deaths.New) / 30,
+      Doses_admin.New.28_days = sum(Doses_admin.New, na.rm = T) / 30
+    )
 
 
 
@@ -435,4 +430,3 @@ countries_table <- data_all %>%
   #                     )
   #          ) %>%
   #   unnest(data)
-
