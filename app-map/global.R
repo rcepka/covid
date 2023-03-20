@@ -33,6 +33,57 @@ pacman::p_load(
 includeCSS("www/style.css")
 
 
+last_update <- format(Sys.time(), format = "%d.%m.%Y, %H:%M")
+
+
+reactive({
+
+  invalidateLater(5000, NULL)
+
+
+  cases <- read_csv(url(
+    "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv"),
+    col_select = !c(1, 3, 4))
+
+  teraz = Sys.time()
+
+  write_csv(cases, here("app-map", "data", "cases.csv"))
+  write_csv(cases(), here("app-map", "data", "cases.csv"))
+
+cases <- cases %>%
+  rename(Country = 1) %>%
+  group_by(Country) %>%
+  #summarise(across(where(is.numeric), sum, na.rm = T))
+  summarise(across(where(is.numeric), \(x) sum(x, na.rm = T)))
+
+
+cases_L <- cases %>%
+  pivot_longer(
+    !Country,
+    names_to = "Date",
+    values_to = "Cases"
+  ) %>%
+  mutate(
+    Date = lubridate::mdy(Date)
+  )
+cases_L <- cases_L %>%
+  nest(.by = Country) %>%
+  mutate(data = purrr::map(data,
+                           ~ mutate(.x,
+                                    Cases.New = Cases - lag(Cases)
+                           )
+  )
+  ) %>%
+  unnest(data)
+
+
+write_csv(cases(), here("app-map", "data", "cases.csv"))
+write_csv(cases_L(), here("app-map", "data", "cases_L.csv"))
+
+
+})
+
+
 
 
 
@@ -47,10 +98,15 @@ if (!file.exists(here("app-map","data","cases.csv")) == "TRUE") {
 
   cat(paste0(Sys.time(), " downloading the data all file because doesnt exists or is old.\n"))
 
+  reactive({
+
+    invalidateLater(10000, NULL)
+
   cases <- read_csv(url(
     "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv"),
     col_select = !c(1, 3, 4))
 
+  })
 
   cases <- cases %>%
     rename(Country = 1) %>%
@@ -79,8 +135,8 @@ if (!file.exists(here("app-map","data","cases.csv")) == "TRUE") {
     unnest(data)
 
 
-  write_csv(cases, "data/cases.csv")
-  write_csv(cases_L, "data/cases_L.csv")
+  write_csv(cases, here("app-map", "data", "cases.csv"))
+  write_csv(cases_L, here("app-map", "data", "cases_L.csv"))
 
 
 } else {

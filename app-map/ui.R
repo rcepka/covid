@@ -39,14 +39,17 @@ navbarPage(
     bootswatch = "darkly"
     ),
 
-  # tags$head(
-  #   tags$link(rel = "stylesheet", type = "text/css", href = "style.css")
-  # ),
-#includeCSS("app-map/www/style.css"),
 
 
   # Application title
   titlePanel("Koronavírus - prehľad situácie"),
+
+
+  tags$style("
+    .maps ul li {
+      width: 250px;
+    }
+      "),
 
 
   fluidRow(
@@ -139,7 +142,8 @@ navbarPage(
              )
            ),
 
-           fluidRow(
+           fluidRow(tags$div(class="maps",
+
              column(12,
                     tabsetPanel(
                       tabPanel("Celkovo",
@@ -160,6 +164,7 @@ navbarPage(
                                )
                     )
              )
+           )
            )
     ),
 
