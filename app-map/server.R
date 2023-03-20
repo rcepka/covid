@@ -22,6 +22,7 @@ function(input, output, session) {
         theme = reactableTheme(
           backgroundColor = "transparent"
         ),
+        class = "hidden-column-headers",
         pagination = F,
         height = 675,
         #width = 275,
@@ -29,7 +30,9 @@ function(input, output, session) {
         borderless = T,
         compact = T,
         #width = 100,
-        defaultColDef = colDef(name=""),
+        defaultColDef = colDef(
+          name=""
+          ),
         columns = list(
           Country = colDef(
             #name = "Štát",
@@ -42,8 +45,8 @@ function(input, output, session) {
               data = .,
               merged_name = "Cases.28",
               merged_position = "above",
-              size = 10,
-              merged_size = 13,
+              size = 14,
+              merged_size = 18,
               merged_color = "red",
               merged_weight = "bold"
             )
@@ -54,7 +57,11 @@ function(input, output, session) {
           cell = merge_column(
             data = .,
             merged_name = "Deaths.28",
-            merged_position = "below"
+            merged_position = "above",
+            size = 14,
+            merged_size = 18,
+            merged_color = "red",
+            merged_weight = "bold"
           )
         ),
         Cases.28 = colDef(show = F),
@@ -62,17 +69,65 @@ function(input, output, session) {
         )
     )
 
+  })
+
+
+
+
+  output$map_total <- renderLeaflet({
+
+    data_total_sum_by_countries_map %>%
+      leaflet() %>%
+      addTiles() %>%
+      # addProviderTiles(
+      #   Jawg.Streets,
+      #   options = providerTileOptions(
+      #     accessToken: "gTgFob5Buiwl9u3smS3CPJtOKqJBVcITkTTYrOCG3xNDi4FNRZlkDmQCgeLdqouK"
+      #     )
+      # ) %>%
+      addProviderTiles(providers$CartoDB.DarkMatter) %>%
+      setView(lng = 10, lat = 10, zoom = 2.4) %>%
+      addCircles(
+        radius = ~sqrt(Cases.Total) * 50,
+        #label = ~Country,
+        #label = ~paste0("<strong>", Country, "</strong>", "<br>", "Prípady: ", format(Cases.Total, big.mark = " ")),
+        popup = ~paste0(
+          "<strong>", Country, "</strong>", "<br>",
+          "Prípady: ", format(Cases.Total, big.mark = " "), "<br>",
+          "Úmrtia: ", format(Deaths.total, big.mark = " ")
+          )
+      )
 
   })
 
 
-  output$map <- renderLeaflet({
+  output$map_28_days <- renderLeaflet({
 
-    leaflet(
-      height = "300px") %>%
-      addTiles()
+    data_total_sum_by_countries_map %>%
+      leaflet() %>%
+      addTiles() %>%
+      # addProviderTiles(
+      #   Jawg.Streets,
+      #   options = providerTileOptions(
+      #     accessToken: "gTgFob5Buiwl9u3smS3CPJtOKqJBVcITkTTYrOCG3xNDi4FNRZlkDmQCgeLdqouK"
+      #     )
+      # ) %>%
+      addProviderTiles(providers$CartoDB.DarkMatter) %>%
+      setView(lng = 10, lat = 10, zoom = 2.4) %>%
+      addCircles(
+        #radius = ~sqrt(Cases.28) * 10,
+        radius = ~Cases.28,
+        color = "red",
+        #label = ~Country,
+        popup = ~paste0(
+          "<strong>", Country, "</strong>", "<br>",
+          "Prípady: ", format(Cases.28, big.mark = " "), "<br>",
+          "Úmrtia: ", format(Deaths.28, big.mark = " ")
+          )
+      )
 
   })
+
 
 
 
@@ -217,6 +272,10 @@ function(input, output, session) {
   })
 
 
+  output$test <-renderPrint({
 
+    invalidateLater(1000)
+    ymd_hms(Sys.time())
+  })
 
 }

@@ -33,10 +33,16 @@
 # Define UI for application that draws a histogram
 navbarPage(
 
+
   theme = bs_theme(
     version = 5,
     bootswatch = "darkly"
     ),
+
+  # tags$head(
+  #   tags$link(rel = "stylesheet", type = "text/css", href = "style.css")
+  # ),
+#includeCSS("app-map/www/style.css"),
 
 
   # Application title
@@ -135,14 +141,26 @@ navbarPage(
 
            fluidRow(
              column(12,
-                    card(height = 675,
-                         card_body_fill(
-                           class="p-0",
-                           leafletOutput("map")
-                           )
-                         )
+                    tabsetPanel(
+                      tabPanel("Celkovo",
+                               card(height = 625,
+                                    card_body_fill(
+                                      class="p-0",
+                                      leafletOutput("map_total")
+                                      )
+                                    )
+                               ),
+                      tabPanel("Mesačne",
+                               card(height = 625,
+                                    card_body_fill(
+                                      class = "p-0",
+                                      leafletOutput("map_28_days")
+                                      )
+                                    )
+                               )
                     )
-           ),
+             )
+           )
     ),
 
     column(3,
@@ -151,7 +169,7 @@ navbarPage(
                       card(height = 825, full_screen = TRUE,
                         card_body_fill(class="mt-3", plotlyOutput("subplot_weekly")))
                       ),
-             tabPanel("28-dní",
+             tabPanel("Mesačne",
                       card(height = 825, full_screen = TRUE,
                            card_body_fill(class="mt-3", plotlyOutput("subplot_28_days")))
                       ),
