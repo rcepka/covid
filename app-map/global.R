@@ -39,11 +39,6 @@ autoInvalidate <- reactiveTimer(60000, NULL)
 
 
 
- a <- 3
-
-
-
-
 
 #autoInvalidate()
 
