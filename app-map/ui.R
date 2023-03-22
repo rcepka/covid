@@ -28,6 +28,7 @@
 #   shinycssloaders
 # )
 
+#source("first_data.R")
 
 
 # Define UI for application that draws a histogram
@@ -60,7 +61,7 @@ navbarPage(
                     card(height = 100,
                          card_body_fill(class="p-0 m-0 justify-content-center",
                                    tags$div(style="color:red;", "Aktualizované"),
-                                   tags$div(class="fs-3 text-white", last_update)
+                                   tags$div(class="fs-4 text-white", textOutput("last_update"))
                                    )
                          )
                     ),
@@ -93,7 +94,8 @@ navbarPage(
                     card(height = 100, class="",
                       card_body_fill(class="p-0 justify-content-center",
                                      tags$div(class="fs-6 color-white", "Prípadov spolu"),
-                                     tags$div(class="fs-2", style="color:red;", format(data_total_sum$Cases.total, big.mark = " "))
+                                     #tags$div(class="fs-2", style="color:red;", format(data_total_sum$Cases.total, big.mark = " "))
+                                     tags$div(class="fs-2", style="color:red;", textOutput("cases_total_sum"))
                                      )
                       )
                     ),
@@ -101,7 +103,8 @@ navbarPage(
                     card(height = 100, class="",
                          card_body_fill(class="p-0 text-white justify-content-center",
                                         tags$div(class="fs-6", "Úmrtí spolu"),
-                                        tags$div(class="fs-2", format(data_total_sum$Deaths.total, big.mark = " "))
+                                        #tags$div(class="fs-2", format(data_total_sum$Deaths.total, big.mark = " "))
+                                        tags$div(class="fs-2", textOutput("deaths_total_sum"))
                          )
                     )
                     ),
@@ -109,7 +112,8 @@ navbarPage(
                     card(height = 100, class="",
                          card_body_fill(class="p-0 justify-content-center",
                            tags$div(class="fs-6 color-white", "Vakcinácií spolu"),
-                           tags$div(class="fs-2", style="color:green;", format(data_total_sum$Vaccine.Doses.Total, big.mark = " "))
+                           #tags$div(class="fs-2", style="color:green;", format(data_total_sum$Vaccine.Doses.Total, big.mark = " "))
+                           tags$div(class="fs-2", style="color:green;", textOutput("vaccinations_total_sum"))
                          )
                     )
              ),
@@ -120,7 +124,8 @@ navbarPage(
                     card(height = 70,
                          card_body_fill(class="p-0 justify-content-center",
                           tags$div(class="text-white", "Prípady za 28 dní"),
-                          tags$div(class="fs-4", style="color:red;", format(data_total_28_days_sum$Cases.total.28, big.mark = " "))
+                          #tags$div(class="fs-4", style="color:red;", format(data_total_28_days_sum$Cases.total.28, big.mark = " "))
+                          tags$div(class="fs-4", style="color:red;", textOutput("cases_total_28"))
                          )
                     )
              ),
@@ -128,7 +133,8 @@ navbarPage(
                     card(height = 70,
                          card_body_fill(class="p-0 justify-content-center",
                           tags$div(class="text-white", "Úmrtia za 28 dní"),
-                          tags$div(class="fs-4", style="color:red;", format(data_total_28_days_sum$Deaths.total.28, big.mark = " "))
+                          #tags$div(class="fs-4", style="color:red;", format(data_total_28_days_sum$Deaths.total.28, big.mark = " "))
+                          tags$div(class="fs-4", style="color:red;", textOutput("deaths_total_28"))
                           )
                     )
              ),
@@ -136,13 +142,15 @@ navbarPage(
                     card(height = 70,
                          card_body_fill(class="p-0 justify-content-center",
                           tags$div(class="text-white", "Vakcinácia za 28 dní"),
-                          tags$div(class="fs-4", style="color:red;", format(data_total_28_days_sum$Vaccine.Doses.Total.28, big.mark = " "))
+                          #tags$div(class="fs-4", style="color:red;", format(data_total_28_days_sum$Vaccine.Doses.Total.28, big.mark = " "))
+                          tags$div(class="fs-4", style="color:red;", textOutput("vaccines_total_28"))
                          )
                     )
              )
            ),
 
            fluidRow(tags$div(class="maps",
+                             tableOutput("test"),
 
              column(12,
                     tabsetPanel(

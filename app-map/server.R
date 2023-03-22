@@ -14,8 +14,24 @@ function(input, output, session) {
 
  #bs_themer()
 
-    #countries_table
+
+
+  output$last_update <- renderText({
+
+    autoInvalidate()
+    #format(Sys.time(), format = "%d.%m.%Y, %H:%M")
+    a
+
+  })
+
+
+
+
+
+  #countries_table
   output$table <- renderReactable ({
+
+    autoInvalidate()
 
     data_total_sum_by_countries %>%
       reactable(
@@ -72,9 +88,72 @@ function(input, output, session) {
   })
 
 
+  # Total Cases
+  output$cases_total_sum <- renderText({
+
+    autoInvalidate()
+     aa <- data_total_sum
+    # #data_total_sum$Cases.total
+     format(aa$Cases.total, big.mark = " ")
+    #bb()
+
+  })
+
+
+  # Total Deaths
+  output$deaths_total_sum <- renderText({
+
+    autoInvalidate()
+    #data_total_sum$Cases.total
+    format(data_total_sum$Deaths.total, big.mark = " ")
+
+  })
+
+
+  # Total Vaccinations
+  output$vaccinations_total_sum <- renderText({
+
+    autoInvalidate()
+    #data_total_sum$Cases.total
+    format(data_total_sum$Vaccine.Doses.Total, big.mark = " ")
+
+  })
+
+
+  # Cases 28-days
+  output$cases_total_28 <- renderText({
+
+    autoInvalidate()
+    #data_total_sum$Cases.total
+    format(data_total_28_days_sum$Cases.total.28, big.mark = " ")
+
+  })
+
+
+  # Deaths 28-days
+  output$deaths_total_28 <- renderText({
+
+    autoInvalidate()
+    #data_total_sum$Cases.total
+    format(data_total_28_days_sum$Deaths.total.28, big.mark = " ")
+
+  })
+
+
+  # Vaccines 28-days
+  output$vaccines_total_28 <- renderText({
+
+    autoInvalidate()
+    #data_total_sum$Cases.total
+    format(data_total_28_days_sum$Vaccine.Doses.Total.28, big.mark = " ")
+
+  })
+
 
 
   output$map_total <- renderLeaflet({
+
+    autoInvalidate()
 
     data_total_sum_by_countries_map %>%
       leaflet() %>%
@@ -102,6 +181,8 @@ function(input, output, session) {
 
 
   output$map_28_days <- renderLeaflet({
+
+    autoInvalidate()
 
     data_total_sum_by_countries_map %>%
       leaflet() %>%
@@ -133,6 +214,8 @@ function(input, output, session) {
 
 
   output$subplot_weekly <- renderPlotly({
+
+    autoInvalidate()
 
     plot_cases_weekly <- data_weekly %>%
       #data_weekly %>%
@@ -204,6 +287,8 @@ function(input, output, session) {
 
   output$subplot_28_days <- renderPlotly({
 
+    autoInvalidate()
+
     plot_cases_28_days <- data_28_days %>%
       #data_weekly %>%
       plot_ly() %>%
@@ -272,10 +357,16 @@ function(input, output, session) {
   })
 
 
-  output$test <-renderPrint({
+  output$test <-renderTable({
 
-    invalidateLater(1000)
-    ymd_hms(Sys.time())
+    #invalidateLater(10000)
+    #autoInvalidate()
+    #head(cases_L)
+   #vals$Cases_L
+    #head(cases3())
   })
+
+
+
 
 }

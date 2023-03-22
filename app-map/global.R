@@ -33,86 +33,46 @@ pacman::p_load(
 includeCSS("www/style.css")
 
 
-last_update <- format(Sys.time(), format = "%d.%m.%Y, %H:%M")
+
+autoInvalidate <- reactiveTimer(60000, NULL)
 
 
-reactive({
-
-  invalidateLater(5000, NULL)
 
 
-  cases <- read_csv(url(
-    "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv"),
-    col_select = !c(1, 3, 4))
-
-  teraz = Sys.time()
-
-  write_csv(cases, here("app-map", "data", "cases.csv"))
-  write_csv(cases(), here("app-map", "data", "cases.csv"))
-
-cases <- cases %>%
-  rename(Country = 1) %>%
-  group_by(Country) %>%
-  #summarise(across(where(is.numeric), sum, na.rm = T))
-  summarise(across(where(is.numeric), \(x) sum(x, na.rm = T)))
-
-
-cases_L <- cases %>%
-  pivot_longer(
-    !Country,
-    names_to = "Date",
-    values_to = "Cases"
-  ) %>%
-  mutate(
-    Date = lubridate::mdy(Date)
-  )
-cases_L <- cases_L %>%
-  nest(.by = Country) %>%
-  mutate(data = purrr::map(data,
-                           ~ mutate(.x,
-                                    Cases.New = Cases - lag(Cases)
-                           )
-  )
-  ) %>%
-  unnest(data)
-
-
-write_csv(cases(), here("app-map", "data", "cases.csv"))
-write_csv(cases_L(), here("app-map", "data", "cases_L.csv"))
-
-
-})
+ a <- 3
 
 
 
 
 
-# #############################
-# Confirmed cases
-# #############################
+#autoInvalidate()
 
-if (!file.exists(here("app-map","data","cases.csv")) == "TRUE") {
+#vals <- reactiveValues({
+
+
+  # #############################
+  # Confirmed cases
+  # #############################
+
+  #autoInvalidate()
 
   # get the date and time of actual update
-  last_update <- format(Sys.time(), format = "%d.%m.%Y, %H:%M")
+  #last_update <- format(Sys.time(), format = "%d.%m.%Y, %H:%M")
 
   cat(paste0(Sys.time(), " downloading the data all file because doesnt exists or is old.\n"))
 
-  reactive({
-
-    invalidateLater(10000, NULL)
-
-  cases <- read_csv(url(
+  cases_raw <- read_csv(url(
     "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv"),
-    col_select = !c(1, 3, 4))
+    col_select = !c(1, 3, 4)
+  )
 
-  })
 
-  cases <- cases %>%
+  cases <- cases_raw %>%
     rename(Country = 1) %>%
     group_by(Country) %>%
     #summarise(across(where(is.numeric), sum, na.rm = T))
     summarise(across(where(is.numeric), \(x) sum(x, na.rm = T)))
+
 
 
   cases_L <- cases %>%
@@ -120,53 +80,49 @@ if (!file.exists(here("app-map","data","cases.csv")) == "TRUE") {
       !Country,
       names_to = "Date",
       values_to = "Cases"
-      ) %>%
+    ) %>%
     mutate(
       Date = lubridate::mdy(Date)
-      )
+    )
+
+
+
+
   cases_L <- cases_L %>%
     nest(.by = Country) %>%
     mutate(data = purrr::map(data,
-                      ~ mutate(.x,
-                               Cases.New = Cases - lag(Cases)
-                               )
-                      )
-           ) %>%
+                             ~ mutate(.x,
+                                      Cases.New = Cases - lag(Cases)
+                             )
+    )
+    ) %>%
     unnest(data)
 
 
   write_csv(cases, here("app-map", "data", "cases.csv"))
   write_csv(cases_L, here("app-map", "data", "cases_L.csv"))
 
-
-} else {
-
-
-  cat(paste0(Sys.time(), " file exists, skip downloading and loading it locally.\n"))
-
-  cases <- read_csv(here("app-map", "data", "cases.csv"))
-  cases_L <- read_csv(here("app-map", "data", "cases_L.csv"))
-
-}
+  # cat(paste0(Sys.time(), " file exists, skip downloading and loading it locally.\n"))
+  # cases <- read_csv(here("app-map", "data", "cases.csv"))
+  # cases_L <- read_csv(here("app-map", "data", "cases_L.csv"))
 
 
 
 
-# #############################
-# Confirmed deaths
-# #############################
+  # #############################
+  # Confirmed deaths
+  # #############################
 
-if (!file.exists("data/deaths.csv") == "TRUE") {
 
 
   cat(paste0(Sys.time(), " downloading the data all file because doesnt exists or is old.\n"))
 
-  deaths <- read_csv(url(
+  deaths_raw <- read_csv(url(
     "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv"),
     col_select = !c(1, 3, 4))
 
 
-  deaths <- deaths %>%
+  deaths <- deaths_raw %>%
     rename(Country = 1) %>%
     group_by(Country) %>%
     summarise(across(where(is.numeric), sum))
@@ -177,51 +133,45 @@ if (!file.exists("data/deaths.csv") == "TRUE") {
       !Country,
       names_to = "Date",
       values_to = "Deaths"
-      ) %>%
+    ) %>%
     mutate(Date = lubridate::mdy(Date)) %>%
     nest(.by = Country) %>%
     mutate(data = purrr::map(data,
-                      ~ mutate(.x,
-                               Deaths.New = Deaths - lag(Deaths)
-                               )
-                      )
-           ) %>%
+                             ~ mutate(.x,
+                                      Deaths.New = Deaths - lag(Deaths)
+                             )
+    )
+    ) %>%
     unnest(data)
 
-
+  write_csv(deaths_raw, "data/deaths_raw.csv")
   write_csv(deaths, "data/deaths.csv")
   write_csv(deaths_L, "data/deaths_L.csv")
 
 
-} else {
-
-
-  cat(paste0(Sys.time(), " file exists, skip downloading and loading it locally.\n"))
-
-  deaths <- read_csv("data/deaths.csv")
-  deaths_L <- read_csv("data/deaths_L.csv")
-
-}
+  # cat(paste0(Sys.time(), " file exists, skip downloading and loading it locally.\n"))
+  # deaths <- read_csv("data/deaths.csv")
+  # deaths_L <- read_csv("data/deaths_L.csv")
 
 
 
 
-# #############################
-#  recovered
-# #############################
 
-if (!file.exists("data/recovered.csv") == "TRUE") {
+  # #############################
+  #  recovered
+  # #############################
+
 
 
   cat(paste0(Sys.time(), " downloading the data all file because doesnt exists or is old.\n"))
 
 
-  recovered <- read_csv(url(
+  recovered_raw <- read_csv(url(
     "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_recovered_global.csv"),
     col_select = !c(1, 3, 4))
 
 
-  recovered <- recovered %>%
+  recovered <- recovered_raw %>%
     rename(Country = 1) %>%
     group_by(Country) %>%
     summarise(across(where(is.numeric), sum))
@@ -232,61 +182,55 @@ if (!file.exists("data/recovered.csv") == "TRUE") {
       !Country,
       names_to = "Date",
       values_to = "Recovered"
-      ) %>%
+    ) %>%
     mutate(Date = lubridate::mdy(Date)) %>%
     nest(.by = Country) %>%
     mutate(data = purrr::map(data,
-                      ~ mutate(.x,
-                               Recovered.New = Recovered - lag(Recovered)
-                               )
-                      )
-           ) %>%
+                             ~ mutate(.x,
+                                      Recovered.New = Recovered - lag(Recovered)
+                             )
+    )
+    ) %>%
     unnest(data)
 
-
+  write_csv(recovered_raw, "data/recovered_raw.csv")
   write_csv(recovered, "data/recovered.csv")
   write_csv(recovered_L, "data/recovered_L.csv")
 
 
-} else {
-
-
-  cat(paste0(Sys.time(), " file exists, skip downloading and loading it locally.\n"))
-
-  recovered <- read_csv("data/recovered.csv")
-  recovered_L <- read_csv("data/recovered_L.csv")
-
-}
+  # cat(paste0(Sys.time(), " file exists, skip downloading and loading it locally.\n"))
+  # recovered <- read_csv("data/recovered.csv")
+  # recovered_L <- read_csv("data/recovered_L.csv")
 
 
 
 
-# #############################
-#  Vaccines
-# #############################
 
-if (!file.exists("data/vaccines.csv") == "TRUE") {
+  # #############################
+  #  Vaccines
+  # #############################
+
 
 
   cat(paste0(Sys.time(), " downloading the data all file because doesnt exists or is old.\n"))
 
 
-  vaccines <- read_csv(url(
+  vaccines_raw <- read_csv(url(
     #"https://raw.githubusercontent.com/govex/COVID-19/master/data_tables/vaccine_data/global_data/time_series_covid19_vaccine_doses_admin_global.csv"),
     "https://raw.githubusercontent.com/govex/COVID-19/master/data_tables/vaccine_data/global_data/time_series_covid19_vaccine_global.csv"),
     col_select = !c(2, 3)
-    )
+  )
 
-  vaccines <- vaccines %>%
+  vaccines <- vaccines_raw %>%
     rename(Country = Country_Region) %>%
     nest(.by = Country) %>%
     mutate(data = purrr::map(data,
-                      ~ mutate(.x,
-                               Doses_admin.New = Doses_admin - lag(Doses_admin),
-                               People_at_least_one_dose.New = People_at_least_one_dose - lag(People_at_least_one_dose)
-                               )
-                      )
-           ) %>%
+                             ~ mutate(.x,
+                                      Doses_admin.New = Doses_admin - lag(Doses_admin),
+                                      People_at_least_one_dose.New = People_at_least_one_dose - lag(People_at_least_one_dose)
+                             )
+    )
+    ) %>%
     unnest(data)
 
 
@@ -297,19 +241,15 @@ if (!file.exists("data/vaccines.csv") == "TRUE") {
       People_at_least_one_dose = sum(People_at_least_one_dose, na.rm = T)
     )
 
+  # write_csv(vaccines_raw, "data/vaccines_raw.csv")
+  # write_csv(vaccines, "data/vaccines.csv")
+  # write.csv(vaccines_summarised, "data/vaccines_summarised.csv")
 
-  write_csv(vaccines, "data/vaccines.csv")
-  write.csv(vaccines_summarised, "data/vaccines_summarised.csv")
+  # cat(paste0(Sys.time(), " file exists, skip downloading and loading it locally.\n"))
+  # vaccines <- read_csv("data/vaccines.csv")
+  # vaccines_summarised <- read_csv("data/vaccines_summarised.csv")
 
 
-} else {
-
-
-  cat(paste0(Sys.time(), " file exists, skip downloading and loading it locally.\n"))
-  vaccines <- read_csv("data/vaccines.csv")
-  vaccines_summarised <- read_csv("data/vaccines_summarised.csv")
-
-}
 
 
 
@@ -321,7 +261,7 @@ if (!file.exists("data/vaccines.csv") == "TRUE") {
   # Basic df
   data_total <- left_join(
     cases_L, deaths_L, by = c("Country", "Date")
-    )
+  )
 
   data_total <- left_join(
     data_total, recovered_L, by = c("Country", "Date")
@@ -421,7 +361,7 @@ if (!file.exists("data/vaccines.csv") == "TRUE") {
     mutate(
       Country = replace(Country, Country == "United States", "USA"),
       Country = replace(Country, Country == "Czech Republic", "Czechia")
-      )
+    )
 
   # We will use as a base the "data_total_sum_by_countries" df created before
   # Get the countries coordinates
@@ -429,7 +369,7 @@ if (!file.exists("data/vaccines.csv") == "TRUE") {
     data_total_sum_by_countries,
     countries_coordinates,
     by = "Country"
-    )
+  )
 
 
 
@@ -465,22 +405,27 @@ if (!file.exists("data/vaccines.csv") == "TRUE") {
 
 
 
-
-  # # Testing mutate of nested data
-  # cases_L <- cases_L %>%
-  #   nest(.by = Country) %>%
-  #   mutate(data = map(data,
-  #                     ~ mutate(.x,
-  #                              Cases.New = Cases - lag(Cases)
-  #                              )
-  #                     )
-  #          ) %>%
-  #   unnest(data)
+#})
 
 
 
-  # fileData <- reactiveFileReader(3000, session, 'data.csv', read.csv)
+
+
+
+
+
+
+
+
+  # cases <- read_csv(here("app-map", "data", "cases.csv"))
+  # cases_L <- read_csv(here("app-map", "data", "cases_L.csv"))
   #
-  # file.info(here("app-map", "a.csv"), extra_cols = F)$mtime
-  # file.info(here("app-map", "a.csv"), extra_cols = F)$mtime[1]
-
+  # deaths <- read_csv("data/deaths.csv")
+  # deaths_L <- read_csv("data/deaths_L.csv")
+  #
+  # recovered <- read_csv("data/recovered.csv")
+  # recovered_L <- read_csv("data/recovered_L.csv")
+  #
+  #
+  # vaccines <- read_csv("data/vaccines.csv")
+  # vaccines_summarised <- read_csv("data/vaccines_summarised.csv")
