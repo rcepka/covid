@@ -20,8 +20,12 @@
    display: none !important;
 }
 
-
+.rt-thead .rt-th {
+  border-bottom: none;
+}
 
 .navbar.navbar-default {
   --bs-navbar-padding-x: 0;
   --bs-navbar-padding-y: 0 !important;
+  height:75px;
+}

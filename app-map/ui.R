@@ -28,11 +28,12 @@
 #   shinycssloaders
 # )
 
-#source("first_data.R")
+source("global.R")
 
 
 # Define UI for application that draws a histogram
 navbarPage(
+
 
 
   theme = bs_theme(
@@ -42,9 +43,12 @@ navbarPage(
 
 
 
+
   # Application title
   titlePanel("Koronavírus - prehľad situácie"),
-
+tags$head(
+    tags$link(rel = "stylesheet", type = "text/css", href = "style.css")
+  ),
 
   tags$style("
     .maps ul li {
@@ -150,8 +154,7 @@ navbarPage(
            ),
 
            fluidRow(tags$div(class="maps",
-                             tableOutput("test"),
-
+            #tableOutput("test_table"),
              column(12,
                     tabsetPanel(
                       tabPanel("Celkovo",

@@ -7,6 +7,7 @@
 #    http://shiny.rstudio.com/
 #
 
+source("global.R")
 
 
 # Define server logic required to draw a histogram
@@ -19,21 +20,18 @@ function(input, output, session) {
   output$last_update <- renderText({
 
     autoInvalidate()
-    #format(Sys.time(), format = "%d.%m.%Y, %H:%M")
-    a
+    format(Sys.time(), format = "%d.%m.%Y, %H:%M")
 
   })
-
-
 
 
 
   #countries_table
   output$table <- renderReactable ({
 
-    autoInvalidate()
+    #autoInvalidate()
 
-    data_total_sum_by_countries %>%
+    data_total_sum_by_countries() %>%
       reactable(
         theme = reactableTheme(
           backgroundColor = "transparent"
@@ -91,21 +89,17 @@ function(input, output, session) {
   # Total Cases
   output$cases_total_sum <- renderText({
 
-    autoInvalidate()
-     aa <- data_total_sum
-    # #data_total_sum$Cases.total
-     format(aa$Cases.total, big.mark = " ")
-    #bb()
+    #autoInvalidate()
+    format(data_total_sum()$Cases.total, big.mark = " ")
 
-  })
+    })
 
 
   # Total Deaths
   output$deaths_total_sum <- renderText({
 
-    autoInvalidate()
-    #data_total_sum$Cases.total
-    format(data_total_sum$Deaths.total, big.mark = " ")
+    #autoInvalidate()
+    format(data_total_sum()$Deaths.total, big.mark = " ")
 
   })
 
@@ -113,9 +107,8 @@ function(input, output, session) {
   # Total Vaccinations
   output$vaccinations_total_sum <- renderText({
 
-    autoInvalidate()
-    #data_total_sum$Cases.total
-    format(data_total_sum$Vaccine.Doses.Total, big.mark = " ")
+    #autoInvalidate()
+    format(data_total_sum()$Vaccine.Doses.Total, big.mark = " ")
 
   })
 
@@ -123,9 +116,8 @@ function(input, output, session) {
   # Cases 28-days
   output$cases_total_28 <- renderText({
 
-    autoInvalidate()
-    #data_total_sum$Cases.total
-    format(data_total_28_days_sum$Cases.total.28, big.mark = " ")
+    #autoInvalidate()
+    format(data_total_28_days_sum()$Cases.total.28, big.mark = " ")
 
   })
 
@@ -133,9 +125,8 @@ function(input, output, session) {
   # Deaths 28-days
   output$deaths_total_28 <- renderText({
 
-    autoInvalidate()
-    #data_total_sum$Cases.total
-    format(data_total_28_days_sum$Deaths.total.28, big.mark = " ")
+    #autoInvalidate()
+    format(data_total_28_days_sum()$Deaths.total.28, big.mark = " ")
 
   })
 
@@ -143,9 +134,8 @@ function(input, output, session) {
   # Vaccines 28-days
   output$vaccines_total_28 <- renderText({
 
-    autoInvalidate()
-    #data_total_sum$Cases.total
-    format(data_total_28_days_sum$Vaccine.Doses.Total.28, big.mark = " ")
+    #autoInvalidate()
+    format(data_total_28_days_sum()$Vaccine.Doses.Total.28, big.mark = " ")
 
   })
 
@@ -153,9 +143,9 @@ function(input, output, session) {
 
   output$map_total <- renderLeaflet({
 
-    autoInvalidate()
+    #autoInvalidate()
 
-    data_total_sum_by_countries_map %>%
+    data_total_sum_by_countries_map() %>%
       leaflet() %>%
       addTiles() %>%
       # addProviderTiles(
@@ -182,9 +172,9 @@ function(input, output, session) {
 
   output$map_28_days <- renderLeaflet({
 
-    autoInvalidate()
+    #autoInvalidate()
 
-    data_total_sum_by_countries_map %>%
+    data_total_sum_by_countries_map() %>%
       leaflet() %>%
       addTiles() %>%
       # addProviderTiles(
@@ -215,9 +205,10 @@ function(input, output, session) {
 
   output$subplot_weekly <- renderPlotly({
 
-    autoInvalidate()
+    #autoInvalidate()
 
-    plot_cases_weekly <- data_weekly %>%
+    plot_cases_weekly <- reactive({
+      data_weekly() %>%
       #data_weekly %>%
       plot_ly() %>%
       add_bars(x = ~Date, y = ~Cases.New.weekly, color = I("red")) %>%
@@ -231,45 +222,50 @@ function(input, output, session) {
         xaxis = list()
       ) %>%
       config(displayModeBar = FALSE)
+    })
 
-    plot_deaths_weekly <- data_weekly %>%
-      #data_weekly %>%
-      plot_ly(
-        #height = 250
-      ) %>%
-      add_bars(x = ~Date, y = ~Deaths.New.weekly, color = I("white")) %>%
-      layout(
-        plot_bgcolor  = "rgba(0, 0, 0, 0)",
-        paper_bgcolor = "rgba(0, 0, 0, 0)",
-        font = list(color = '#FFFFFF'),
-        yaxis = list(title = "Úmrtia týždenne")
-      ) %>%
-      config(displayModeBar = FALSE)
+    plot_deaths_weekly <- reactive({
+      data_weekly() %>%
+        #data_weekly %>%
+        plot_ly(
+          #height = 250
+          ) %>%
+        add_bars(x = ~Date, y = ~Deaths.New.weekly, color = I("white")) %>%
+        layout(
+          plot_bgcolor  = "rgba(0, 0, 0, 0)",
+          paper_bgcolor = "rgba(0, 0, 0, 0)",
+          font = list(color = '#FFFFFF'),
+          yaxis = list(title = "Úmrtia týždenne")
+        ) %>%
+        config(displayModeBar = FALSE)
+    })
 
-    plot_doses_weekly <- data_weekly %>%
-      #data_weekly %>%
-      plot_ly(
-        #height = 250
-      ) %>%
-      add_bars(x = ~Date, y = ~Doses_admin.New.weekly, color = I("green")) %>%
-      layout(
-        #height = 250,
-        plot_bgcolor  = "rgba(0, 0, 0, 0)",
-        paper_bgcolor = "rgba(0, 0, 0, 0)",
-        font = list(color = 'white'),
-        xaxis = list(
-          title = ""
-        ),
-        yaxis = list(
-          title = "Vakcinácia týždeňne"
-        )
-      ) %>%
-      config(displayModeBar = FALSE)
+    plot_doses_weekly <- reactive({
+      data_weekly() %>%
+        #data_weekly %>%
+        plot_ly(
+          #height = 250
+        ) %>%
+        add_bars(x = ~Date, y = ~Doses_admin.New.weekly, color = I("green")) %>%
+        layout(
+          #height = 250,
+          plot_bgcolor  = "rgba(0, 0, 0, 0)",
+          paper_bgcolor = "rgba(0, 0, 0, 0)",
+          font = list(color = 'white'),
+          xaxis = list(
+            title = ""
+            ),
+          yaxis = list(
+            title = "Vakcinácia týždeňne"
+            )
+          ) %>%
+        config(displayModeBar = FALSE)
+    })
 
     subplot(
-      plot_cases_weekly,
-      plot_deaths_weekly,
-      plot_doses_weekly,
+      plot_cases_weekly(),
+      plot_deaths_weekly(),
+      plot_doses_weekly(),
       titleY = T,
       titleX = F,
       margin = 0.045,
@@ -287,61 +283,67 @@ function(input, output, session) {
 
   output$subplot_28_days <- renderPlotly({
 
-    autoInvalidate()
+    #autoInvalidate()
 
-    plot_cases_28_days <- data_28_days %>%
-      #data_weekly %>%
-      plot_ly() %>%
-      add_bars(x = ~Date, y = ~Cases.New.28_days, color = I("red")) %>%
-      layout(
-        title = "",
-        #height = 450,
-        plot_bgcolor  = "rgba(0, 0, 0, 0)",
-        paper_bgcolor = "rgba(0, 0, 0, 0)",
-        font = list(color = 'red'),
-        yaxis = list(title = "Nové prípady"),
-        xaxis = list()
-      ) %>%
-      config(displayModeBar = FALSE)
+    plot_cases_28_days <- reactive({
+      data_28_days() %>%
+        #data_weekly %>%
+        plot_ly() %>%
+        add_bars(x = ~Date, y = ~Cases.New.28_days, color = I("red")) %>%
+        layout(
+          title = "",
+          #height = 450,
+          plot_bgcolor  = "rgba(0, 0, 0, 0)",
+          paper_bgcolor = "rgba(0, 0, 0, 0)",
+          font = list(color = 'red'),
+          yaxis = list(title = "Nové prípady"),
+          xaxis = list()
+          ) %>%
+        config(displayModeBar = FALSE)
+    })
 
-    plot_deaths_28_days <- data_28_days %>%
-      #data_weekly %>%
-      plot_ly(
-        #height = 250
-      ) %>%
-      add_bars(x = ~Date, y = ~Deaths.New.28_days, color = I("white")) %>%
-      layout(
-        plot_bgcolor  = "rgba(0, 0, 0, 0)",
-        paper_bgcolor = "rgba(0, 0, 0, 0)",
-        font = list(color = '#FFFFFF'),
-        yaxis = list(title = "Úmrtia")
-      ) %>%
-      config(displayModeBar = FALSE)
+    plot_deaths_28_days <- reactive({
+      data_28_days() %>%
+        #data_weekly %>%
+        plot_ly(
+          #height = 250
+          ) %>%
+        add_bars(x = ~Date, y = ~Deaths.New.28_days, color = I("white")) %>%
+        layout(
+          plot_bgcolor  = "rgba(0, 0, 0, 0)",
+          paper_bgcolor = "rgba(0, 0, 0, 0)",
+          font = list(color = '#FFFFFF'),
+          yaxis = list(title = "Úmrtia")
+          ) %>%
+        config(displayModeBar = FALSE)
+    })
 
-    plot_doses_28_days <- data_28_days %>%
-      #data_weekly %>%
-      plot_ly(
-        #height = 250
-      ) %>%
-      add_bars(x = ~Date, y = ~Doses_admin.New.28_days, color = I("green")) %>%
-      layout(
-        #height = 250,
-        plot_bgcolor  = "rgba(0, 0, 0, 0)",
-        paper_bgcolor = "rgba(0, 0, 0, 0)",
-        font = list(color = 'white'),
-        xaxis = list(
-          title = ""
-        ),
-        yaxis = list(
-          title = "Vakcinácia"
-        )
-      ) %>%
-      config(displayModeBar = FALSE)
+    plot_doses_28_days <- reactive({
+      data_28_days() %>%
+        #data_weekly %>%
+        plot_ly(
+          #height = 250
+          ) %>%
+        add_bars(x = ~Date, y = ~Doses_admin.New.28_days, color = I("green")) %>%
+        layout(
+          #height = 250,
+          plot_bgcolor  = "rgba(0, 0, 0, 0)",
+          paper_bgcolor = "rgba(0, 0, 0, 0)",
+          font = list(color = 'white'),
+          xaxis = list(
+            title = ""
+            ),
+          yaxis = list(
+            title = "Vakcinácia"
+            )
+          ) %>%
+        config(displayModeBar = FALSE)
+    })
 
     subplot(
-      plot_cases_28_days,
-      plot_deaths_28_days,
-      plot_doses_28_days,
+      plot_cases_28_days(),
+      plot_deaths_28_days(),
+      plot_doses_28_days(),
       titleY = T,
       titleX = F,
       margin = 0.045,
@@ -357,13 +359,8 @@ function(input, output, session) {
   })
 
 
-  output$test <-renderTable({
-
-    #invalidateLater(10000)
-    #autoInvalidate()
-    #head(cases_L)
-   #vals$Cases_L
-    #head(cases3())
+  output$test_table <- renderTable({
+    #head(test_df())
   })
 
 
